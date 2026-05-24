@@ -1,0 +1,117 @@
+.element-select {
+    background-color: #f3f3f6;
+    min-height: 1920px;
+    min-width: 1080px;
+    position: relative;
+    width: 100%;
+}
+
+.element-select .text-wrapper {
+    align-items: center;
+    color: #000000;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 96px;
+    font-weight: 700;
+    height: 115px;
+    justify-content: center;
+    left: 397px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    text-shadow: 0px 4px 4px #00000040;
+    top: 54px;
+    white-space: nowrap;
+}
+
+.element-select .rectangle {
+    background-color: #ffffff;
+    height: 219px;
+    left: 438px;
+    position: absolute;
+    top: 1055px;
+    width: 203px;
+}
+
+.element-select .div {
+    background-color: #ffffff;
+    height: 219px;
+    left: 210px;
+    position: absolute;
+    top: 1055px;
+    width: 203px;
+}
+
+.element-select .rectangle-2 {
+    background-color: #ffffff;
+    height: 219px;
+    left: 210px;
+    position: absolute;
+    top: 1313px;
+    width: 203px;
+}
+
+.element-select .rectangle-3 {
+    background-color: #ffffff;
+    height: 219px;
+    left: 210px;
+    position: absolute;
+    top: 1571px;
+    width: 203px;
+}
+
+.element-select .rectangle-4 {
+    background-color: #ffffff;
+    height: 219px;
+    left: 438px;
+    position: absolute;
+    top: 1571px;
+    width: 203px;
+}
+
+.element-select .rectangle-5 {
+    background-color: #ffffff;
+    height: 219px;
+    left: 438px;
+    position: absolute;
+    top: 1313px;
+    width: 203px;
+}
+
+.element-select .rectangle-6 {
+    background-color: #ffffff;
+    height: 219px;
+    left: 666px;
+    position: absolute;
+    top: 1055px;
+    width: 203px;
+}
+
+.element-select .rectangle-7 {
+    background-color: #ffffff;
+    height: 219px;
+    left: 666px;
+    position: absolute;
+    top: 1571px;
+    width: 203px;
+}
+
+.element-select .rectangle-8 {
+    background-color: #ffffff;
+    height: 219px;
+    left: 666px;
+    position: absolute;
+    top: 1313px;
+    width: 203px;
+}
+
+.element-select .selected-frame {
+    border: 1px solid;
+    border-color: #4c4c4c;
+    height: 801px;
+    left: 234px;
+    position: absolute;
+    top: 174px;
+    width: 612px;
+}

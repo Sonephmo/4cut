@@ -1,0 +1,30 @@
+{
+  "name": "haesol-4cut-printer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Supabase print_jobs 감지 → Windows 이미지 인쇄",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "dev": "tsx index.ts",
+    "bundle": "esbuild index.ts --bundle --platform=node --target=node20 --outfile=dist/bundle.cjs --format=cjs",
+    "package:exe": "npm run build && npm run bundle && pkg dist/bundle.cjs -t node20-win-x64 -o dist-pkg/haesol-4cut-printer.exe",
+    "package:release": "npm run package:exe && node scripts/make-release.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@yao-pkg/pkg": "^6.19.0",
+    "esbuild": "^0.28.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "pkg": {
+    "targets": ["node20-win-x64"]
+  }
+}

@@ -1,0 +1,325 @@
+.element-MAIN {
+    background-color: #f3f3f6;
+    border: 3px solid;
+    border-color: #000000;
+    display: flex;
+    flex-direction: column;
+    min-height: 1920px;
+    min-width: 1080px;
+    width: 100%;
+}
+
+.element-MAIN .button-setting {
+    aspect-ratio: 1;
+    height: 61px;
+    margin-left: 1000px;
+    margin-top: 29px;
+    object-fit: cover;
+    width: 61px;
+}
+
+.element-MAIN .frame-basic-frame {
+    height: 344px;
+    margin-left: 246px;
+    margin-top: 125px;
+    position: relative;
+    width: 579px;
+}
+
+.element-MAIN .div {
+    background-color: #ffce4c;
+    border-radius: 30px;
+    box-shadow: 0px 4px 78px 8px #00000040;
+    height: 344px;
+    left: 3px;
+    position: absolute;
+    top: 0;
+    width: 576px;
+}
+
+.element-MAIN .text-wrapper {
+    align-items: center;
+    color: #000000;
+    display: flex;
+    font-family: "Kanit-Bold", Helvetica;
+    font-size: 32px;
+    font-weight: 700;
+    height: 48px;
+    justify-content: center;
+    left: 24px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    text-shadow: 0px 4px 4px #00000040;
+    top: 13px;
+}
+
+.element-MAIN .context-basic-frame {
+    color: #000000;
+    font-family: "Kanit-Regular", Helvetica;
+    font-size: 24px;
+    font-weight: 400;
+    height: 72px;
+    left: 124px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    text-shadow: 0px 4px 4px #00000040;
+    top: 64px;
+}
+
+.element-MAIN .image-basic-frame {
+    aspect-ratio: 1.06;
+    height: 173px;
+    left: 12px;
+    position: absolute;
+    top: 151px;
+    width: 181px;
+}
+
+.element-MAIN .image {
+    aspect-ratio: 1.62;
+    height: 171px;
+    left: 244px;
+    object-fit: cover;
+    position: absolute;
+    top: 151px;
+    width: 277px;
+}
+
+.element-MAIN .frame-designed-frame {
+    box-shadow: 0px 4px 4px #00000040;
+    height: 344px;
+    margin-left: 246px;
+    margin-top: 47px;
+    position: relative;
+    width: 576px;
+}
+
+.element-MAIN .frame-desinged-frame {
+    background-color: #526cc4;
+    border-radius: 30px;
+    box-shadow: 0px 4px 78px 8px #00000040;
+    height: 344px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 576px;
+}
+
+.element-MAIN .context-designed {
+    color: #fdfde9;
+    font-family: "Kanit-Regular", Helvetica;
+    font-size: 24px;
+    font-weight: 400;
+    height: 72px;
+    left: 33px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    text-shadow: 0px 4px 4px #00000040;
+    top: 64px;
+    width: 511px;
+}
+
+.element-MAIN .text-designed-frame {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Kanit-Bold", Helvetica;
+    font-size: 32px;
+    font-weight: 700;
+    height: 48px;
+    justify-content: center;
+    left: 45px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    text-shadow: 0px 4px 4px #00000040;
+    top: 13px;
+    width: 272px;
+}
+
+.element-MAIN .img {
+    aspect-ratio: 0.77;
+    height: 163px;
+    left: 11px;
+    object-fit: cover;
+    position: absolute;
+    top: 166px;
+    width: 143px;
+}
+
+.element-MAIN .image-2 {
+    aspect-ratio: 0.77;
+    height: 161px;
+    left: 26px;
+    object-fit: cover;
+    position: absolute;
+    top: 164px;
+    width: 140px;
+}
+
+.element-MAIN .image-3 {
+    aspect-ratio: 0.77;
+    height: 157px;
+    left: 43px;
+    object-fit: cover;
+    position: absolute;
+    top: 164px;
+    width: 136px;
+}
+
+.element-MAIN .image-4 {
+    aspect-ratio: 0.77;
+    height: 147px;
+    left: 67px;
+    object-fit: cover;
+    position: absolute;
+    top: 163px;
+    width: 125px;
+}
+
+.element-MAIN .image-5 {
+    aspect-ratio: 0.77;
+    height: 145px;
+    left: 86px;
+    object-fit: cover;
+    position: absolute;
+    top: 163px;
+    width: 121px;
+}
+
+.element-MAIN .image-6 {
+    aspect-ratio: 0.77;
+    height: 143px;
+    left: 106px;
+    object-fit: cover;
+    position: absolute;
+    top: 164px;
+    width: 117px;
+}
+
+.element-MAIN .image-7 {
+    aspect-ratio: 0.77;
+    height: 140px;
+    left: 129px;
+    object-fit: cover;
+    position: absolute;
+    top: 166px;
+    width: 114px;
+}
+
+.element-MAIN .image-8 {
+    aspect-ratio: 0.77;
+    height: 137px;
+    left: 150px;
+    object-fit: cover;
+    position: absolute;
+    top: 168px;
+    width: 109px;
+}
+
+.element-MAIN .image-9 {
+    aspect-ratio: 0.77;
+    height: 133px;
+    left: 175px;
+    object-fit: cover;
+    position: absolute;
+    top: 170px;
+    width: 104px;
+}
+
+.element-MAIN .image-10 {
+    aspect-ratio: 0.77;
+    height: 137px;
+    left: 198px;
+    object-fit: cover;
+    position: absolute;
+    top: 174px;
+    width: 108px;
+}
+
+.element-MAIN .nurse {
+    aspect-ratio: 1.04;
+    height: 53px;
+    left: 483px;
+    position: absolute;
+    top: 149px;
+    width: 55px;
+}
+
+.element-MAIN .image-11 {
+    aspect-ratio: 1.02;
+    height: 49px;
+    left: 409px;
+    position: absolute;
+    top: 153px;
+    width: 50px;
+}
+
+.element-MAIN .mc {
+    aspect-ratio: 1.16;
+    height: 66px;
+    left: 429px;
+    position: absolute;
+    top: 224px;
+    width: 77px;
+}
+
+.element-MAIN .group-coming-soon {
+    height: 707px;
+    margin-left: 246px;
+    margin-top: 47px;
+    position: relative;
+    width: 592px;
+}
+
+.element-MAIN .rectangle {
+    background-color: #89898999;
+    border-radius: 53px;
+    height: 707px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 588px;
+}
+
+.element-MAIN .text-wrapper-2 {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Kelly Slab-Regular", Helvetica;
+    font-size: 256px;
+    font-weight: 400;
+    height: 310px;
+    justify-content: center;
+    left: 254px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 197px;
+}
+
+.element-MAIN .text-wrapper-3 {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Laila-Regular", Helvetica;
+    font-size: 48px;
+    font-weight: 400;
+    height: 99px;
+    justify-content: center;
+    left: 97px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 492px;
+    width: 393px;
+}

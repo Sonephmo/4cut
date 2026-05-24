@@ -1,0 +1,308 @@
+.element-designed-frame {
+    background-color: #526cc4;
+    border: 3px solid;
+    border-color: #000000;
+    min-height: 1920px;
+    min-width: 1080px;
+    position: relative;
+    width: 100%;
+}
+
+.element-designed-frame .text-wrapper {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 96px;
+    font-weight: 700;
+    height: 115px;
+    justify-content: center;
+    left: 92px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    text-shadow: 0px 4px 4px #00000040;
+    top: 61px;
+    white-space: nowrap;
+}
+
+.element-designed-frame .div {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 15px;
+    font-weight: 700;
+    height: 30px;
+    justify-content: center;
+    left: 397px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 488px;
+    width: 203px;
+}
+
+.element-designed-frame .text-wrapper-2 {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 15px;
+    font-weight: 700;
+    height: 30px;
+    justify-content: center;
+    left: 138px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 488px;
+    width: 203px;
+}
+
+.element-designed-frame .text-wrapper-3 {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 15px;
+    font-weight: 700;
+    height: 30px;
+    justify-content: center;
+    left: 397px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 1218px;
+    width: 203px;
+}
+
+.element-designed-frame .text-wrapper-4 {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 15px;
+    font-weight: 700;
+    height: 30px;
+    justify-content: center;
+    left: 668px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 488px;
+    width: 203px;
+}
+
+.element-designed-frame .text-wrapper-5 {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 15px;
+    font-weight: 700;
+    height: 30px;
+    justify-content: center;
+    left: 138px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 1232px;
+    width: 203px;
+}
+
+.element-designed-frame .text-wrapper-6 {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 15px;
+    font-weight: 700;
+    height: 30px;
+    justify-content: center;
+    left: 397px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 888px;
+    width: 203px;
+}
+
+.element-designed-frame .text-wrapper-7 {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 15px;
+    font-weight: 700;
+    height: 30px;
+    justify-content: center;
+    left: 138px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 888px;
+    width: 203px;
+}
+
+.element-designed-frame .text-wrapper-8 {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 15px;
+    font-weight: 700;
+    height: 30px;
+    justify-content: center;
+    left: 397px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 1618px;
+    width: 203px;
+}
+
+.element-designed-frame .text-wrapper-9 {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 15px;
+    font-weight: 700;
+    height: 30px;
+    justify-content: center;
+    left: 668px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 888px;
+    width: 203px;
+}
+
+.element-designed-frame .text-wrapper-10 {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 15px;
+    font-weight: 700;
+    height: 30px;
+    justify-content: center;
+    left: 132px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 1585px;
+    width: 203px;
+}
+
+.element-designed-frame .image {
+    aspect-ratio: 0.77;
+    height: 254px;
+    left: 141px;
+    object-fit: cover;
+    position: absolute;
+    top: 975px;
+    width: 198px;
+}
+
+.element-designed-frame .img {
+    aspect-ratio: 0.77;
+    height: 240px;
+    left: 676px;
+    object-fit: cover;
+    position: absolute;
+    top: 245px;
+    width: 187px;
+}
+
+.element-designed-frame .image-2 {
+    aspect-ratio: 0.77;
+    height: 232px;
+    left: 409px;
+    object-fit: cover;
+    position: absolute;
+    top: 975px;
+    width: 179px;
+}
+
+.element-designed-frame .image-3 {
+    aspect-ratio: 0.77;
+    height: 232px;
+    left: 409px;
+    object-fit: cover;
+    position: absolute;
+    top: 245px;
+    width: 179px;
+}
+
+.element-designed-frame .image-4 {
+    aspect-ratio: 0.77;
+    height: 232px;
+    left: 150px;
+    object-fit: cover;
+    position: absolute;
+    top: 245px;
+    width: 179px;
+}
+
+.element-designed-frame .image-5 {
+    aspect-ratio: 0.77;
+    height: 237px;
+    left: 148px;
+    object-fit: cover;
+    position: absolute;
+    top: 594px;
+    width: 183px;
+}
+
+.element-designed-frame .image-6 {
+    aspect-ratio: 0.77;
+    height: 236px;
+    left: 408px;
+    object-fit: cover;
+    position: absolute;
+    top: 594px;
+    width: 182px;
+}
+
+.element-designed-frame .image-7 {
+    aspect-ratio: 0.77;
+    height: 245px;
+    left: 403px;
+    object-fit: cover;
+    position: absolute;
+    top: 1324px;
+    width: 191px;
+}
+
+.element-designed-frame .image-8 {
+    aspect-ratio: 0.77;
+    height: 244px;
+    left: 674px;
+    object-fit: cover;
+    position: absolute;
+    top: 595px;
+    width: 191px;
+}
+
+.element-designed-frame .image-9 {
+    aspect-ratio: 0.77;
+    height: 237px;
+    left: 148px;
+    object-fit: cover;
+    position: absolute;
+    top: 1337px;
+    width: 183px;
+}

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat \"C:/Users/samsung/.claude/settings.json\" 2>/dev/null; echo \"---\"; cat \"e:/옛것/옛것들/4cut/.claude/settings.json\" 2>/dev/null)",
+      "Read(//c/Users/samsung/.claude/**)",
+      "Bash(curl -s http://127.0.0.1:3845/mcp)",
+      "Bash(npm install *)",
+      "Bash(node -e \"require.resolve\\('tslib'\\)\")",
+      "Read(//e/����/���͵�/4cut/node_modules/**)"
+    ]
+  }
+}

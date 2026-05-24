@@ -1,0 +1,44 @@
+.element-basic-frame {
+    background-color: #ffce4c;
+    border: 3px solid;
+    border-color: #000000;
+    display: flex;
+    flex-direction: column;
+    min-height: 1920px;
+    min-width: 1080px;
+    width: 100%;
+}
+
+.element-basic-frame .text-wrapper {
+    align-items: center;
+    color: #000000;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 96px;
+    font-weight: 700;
+    height: 115px;
+    justify-content: center;
+    letter-spacing: 0;
+    line-height: normal;
+    margin-left: 62px;
+    margin-top: 37px;
+    text-align: center;
+    text-shadow: 0px 4px 4px #00000040;
+    white-space: nowrap;
+    width: 631px;
+}
+
+.element-basic-frame .basic-frame-black {
+    height: 831.2px;
+    margin-left: 41.4px;
+    margin-top: 35.4px;
+    width: 651.2px;
+}
+
+.element-basic-frame .basic-frame-white {
+    height: 832.6px;
+    margin-left: 370.7px;
+    margin-top: 10.1px;
+    width: 652.6px;
+}
+    

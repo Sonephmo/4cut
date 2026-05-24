@@ -1,0 +1,46 @@
+.element-camera {
+    background-color: #ffce4c;
+    display: flex;
+    flex-direction: column;
+    min-height: 1920px;
+    min-width: 1080px;
+    width: 100%;
+}
+
+.element-camera .group {
+    height: 341.36px;
+    margin-left: 84px;
+    margin-top: 644px;
+    width: 227.58px;
+}
+
+.element-camera .text-wrapper {
+    color: #000000;
+    font-family: "Pretendard-Regular", Helvetica;
+    font-size: 48px;
+    font-weight: 400;
+    height: 97px;
+    letter-spacing: 0;
+    line-height: normal;
+    margin-left: 132px;
+    margin-top: 40.6px;
+    text-align: center;
+    width: 815px;
+}
+
+.element-camera .div {
+    align-items: center;
+    color: #000000;
+    display: flex;
+    font-family: "Pretendard-Bold", Helvetica;
+    font-size: 64px;
+    font-weight: 700;
+    height: 97px;
+    justify-content: center;
+    letter-spacing: 0;
+    line-height: normal;
+    margin-left: 132px;
+    margin-top: 56px;
+    text-align: center;
+    width: 815px;
+}

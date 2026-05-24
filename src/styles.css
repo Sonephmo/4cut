@@ -1,0 +1,1775 @@
+/*
+ * 세로형 키오스크 (타겟 기기: 1080×1920 단일)
+ * 모든 단위는 px 고정. Figma 좌표 그대로 사용.
+ * .app-scale이 디자인 캔버스(1080×1920)를 고정으로 보유하고,
+ * --app-scale 변수(JS 계산)를 transform으로 적용하여 창 크기에 맞게 균일 축소만 한다.
+ * 타겟 기기에서는 scale = 1.
+ */
+
+/* ── 커스텀 폰트 ── */
+@font-face {
+  font-family: "Eulyoo1945";
+  font-weight: 400;
+  font-style: normal;
+  src: url("/design-assets/Eulyoo_font_201204/Eulyoo1945-Regular.otf") format("opentype");
+}
+@font-face {
+  font-family: "Eulyoo1945";
+  font-weight: 600;
+  font-style: normal;
+  src: url("/design-assets/Eulyoo_font_201204/Eulyoo1945-SemiBold.otf") format("opentype");
+}
+@font-face {
+  font-family: "Gowun Dodum";
+  font-weight: 400;
+  font-style: normal;
+  src: url("/design-assets/GowunDodum-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Hunhwa Yangyeon";
+  font-weight: normal;
+  font-style: normal;
+  src: url("/design-assets/HwaYangYunHwaR.ttf") format("truetype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cafe24 Ssurround OTF";
+  font-weight: normal;
+  font-style: normal;
+  src: url("/design-assets/Cafe24Ssurround.otf") format("opentype");
+  font-display: swap;
+}
+
+:root {
+  --color-bg: #f3f3f6;
+  --color-basic: #ffce4c;
+  --color-designed: #526dc4;
+  --color-navy: #244a6d;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-frame-bg: #f3ebd5;
+  --font-pretendard: "Cafe24 Ssurround OTF", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --app-scale: 1;
+  font-family: var(--font-pretendard);
+  color: var(--color-black);
+  background: var(--color-bg);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--font-pretendard);
+  background: #000;
+}
+
+#root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* ── 뷰포트 컨테이너 ── */
+.app-viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* ── 디자인 캔버스: 1080×1920 고정, 좌상단 앵커 scale ── */
+.app-scale {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1080px;
+  height: 1920px;
+  background: var(--color-bg);
+  overflow: hidden;
+  transform: scale(var(--app-scale));
+  transform-origin: top left;
+}
+
+.app-scale .screen {
+  position: relative;
+  width: 1080px;
+  height: 1920px;
+  overflow: hidden;
+}
+
+
+/* ══════════════════════════════════════
+   1_MAIN (Figma 2열 그리드 레이아웃)
+   ══════════════════════════════════════ */
+.screen--main {
+  background: linear-gradient(162.88deg, rgba(255,255,255,0.82) 1.23%, rgba(255,255,255,0.94) 7.38%, #FFFFFF 99.65%);
+  border: 3px solid #000;
+  border-radius: 37px;
+  position: relative;
+}
+
+/* 설정 버튼 */
+.mainBtnSetting {
+  position: absolute;
+  left: 1000px;
+  top: 29px;
+  width: 61px;
+  height: 61px;
+  object-fit: cover;
+  cursor: pointer;
+  z-index: 10;
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+/* 좌측 대형 BH Bio 버튼 (Frame 8) */
+.mainPreview {
+  position: absolute;
+  left: 25px;
+  top: 409px;
+  width: 546px;
+  height: 697px;
+  background: #000;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  border-radius: 30px;
+  overflow: hidden;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.mainPreview:hover { transform: scale(1.02); }
+.mainPreview__img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── 공통 카드 기반 ── */
+.mainCard {
+  position: absolute;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  transition: transform 0.15s ease;
+  overflow: hidden;
+}
+.mainCard:hover { transform: scale(1.02); }
+
+.mainCard__bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+}
+
+/* ── BASIC FRAME 카드 (Frame 9) ── */
+.mainCardBasic {
+  left: 604px;
+  top: 409px;
+  width: 427px;
+  height: 344px;
+}
+.mainCardBasic .mainCard__bg {
+  background-color: #FFD669;
+  box-shadow: 0 4px 78px 8px rgba(0,0,0,0.25);
+}
+.mainCardBasic__title {
+  position: absolute;
+  left: 104px;
+  top: 16px;
+  width: 220px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-size: 32px;
+  font-weight: 700;
+  color: #000;
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  white-space: nowrap;
+}
+.mainCardBasic__sub {
+  position: absolute;
+  left: 39px;
+  top: 74px;
+  width: 350px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-size: 24px;
+  font-weight: 700;
+  color: #000;
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  line-height: 31px;
+}
+.mainCardBasic__char {
+  position: absolute;
+  left: 75px;
+  top: 152px;
+  width: 277px;
+  height: 171px;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* ── DESIGNED FRAME 카드 (Frame 10) ── */
+.mainCardDesigned {
+  left: 604px;
+  top: 764px;
+  width: 427px;
+  height: 344px;
+}
+.mainCardDesigned .mainCard__bg {
+  background-color: #7D9BFF;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+}
+.mainCardDesigned__title {
+  position: absolute;
+  left: 10px;
+  top: 17px;
+  width: 408px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  white-space: nowrap;
+}
+.mainCardDesigned__sub {
+  position: absolute;
+  left: -11px;
+  top: 76px;
+  width: 450px;
+  height: 104px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-size: 20px;
+  font-weight: 700;
+  color: #FEFEE9;
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  line-height: 26px;
+}
+
+/* Designed 카드 캐릭터 이미지 (가로 flat 배열) */
+.mainDChar { position: absolute; object-fit: cover; pointer-events: none; }
+.mainDChar--116  { left: 0px;    top: 220px; width: 101px; height: 130px; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25)); }
+.mainDChar--121  { left: 13px;   top: 220px; width: 100px; height: 130px; }
+.mainDChar--114  { left: 28px;   top: 220px; width: 100px; height: 129px; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25)); }
+.mainDChar--123  { left: 47px;   top: 220px; width: 100px; height: 129px; }
+.mainDChar--120  { left: 64px;   top: 220px; width: 100px; height: 130px; }
+.mainDChar--122  { left: 82px;   top: 220px; width: 100px; height: 130px; }
+.mainDChar--119  { left: 103px;  top: 220px; width: 101px; height: 130px; }
+.mainDChar--118  { left: 122px;  top: 220px; width: 100px; height: 130px; }
+.mainDChar--117  { left: 145px;  top: 220px; width: 100px; height: 130px; }
+.mainDChar--115  { left: 169px;  top: 220px; width: 100px; height: 129px; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25)); }
+.mainDChar--nurse { left: 311px; top: 220px; width: 55px;  height: 53px; }
+.mainDChar--87   { left: 373px;  top: 261px; width: 50px;  height: 49px; }
+.mainDChar--mc   { left: 289px;  top: 273px; width: 77px;  height: 66px; }
+
+/* ── ANIMAL CROSSING 카드 (Frame 11) ── */
+.mainCardAnimal {
+  left: 25px;
+  top: 1135px;
+  width: 546px;
+  height: 375px;
+}
+.mainCardAnimal .mainCard__bg {
+  background-color: #52C480;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+}
+.mainAnimalLogo {
+  position: absolute;
+  left: 148px;
+  top: 0;
+  width: 249px;
+  height: 140px;
+  object-fit: contain;
+  pointer-events: none;
+}
+.mainAnimalImg {
+  position: absolute;
+  border-radius: 11px;
+  object-fit: cover;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25));
+}
+.mainAnimalImg--137 { left: 76px;  top: 140px; width: 119px; height: 185px; }
+.mainAnimalImg--136 { left: 214px; top: 140px; width: 117px; height: 185px; }
+.mainAnimalImg--134 { left: 350px; top: 139px; width: 119px; height: 186px; }
+
+/* ── BH Bio Frame 카드 (Frame 12, 회색) ── */
+.mainCardBio {
+  left: 604px;
+  top: 1135px;
+  width: 427px;
+  height: 375px;
+  cursor: not-allowed;
+}
+.mainCardBio:hover { transform: none; }
+.mainCardBio .mainCard__bg {
+  background-color: #B2B2B2;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  opacity: 0.6;
+}
+.mainCardBio__title {
+  position: absolute;
+  left: 10px;
+  top: 116px;
+  width: 408px;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 42px;
+  color: #fff;
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  pointer-events: none;
+  opacity: 0.5;
+}
+.mainCardBio__char {
+  position: absolute;
+  left: 255px;
+  top: 218px;
+  width: 116px;
+  height: 157px;
+  object-fit: contain;
+  pointer-events: none;
+  opacity: 0.5;
+}
+/* Coming Soon 배지 */
+.mainCardBio__comingSoon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-size: 40px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.mainVersion {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  font-family: var(--font-pretendard);
+  font-size: 24px;
+  color: #aaa;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════
+   2_1 Basic Frame / 2_2 Designed Frame
+   ══════════════════════════════════════ */
+.screen--frameConfirm {
+  position: relative;
+  border-radius: 30px;
+}
+
+.screen--frameConfirm-basic .frameConfirm__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--color-basic);
+  border-radius: 30px;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+}
+
+.screen--frameConfirm-bio .frameConfirm__bg {
+  position: absolute;
+  inset: 0;
+  background: #FFDD6F;
+  border-radius: 30px;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+}
+
+/* BIO FRAME_CONFIRM 요소 */
+.frameConfirmBio__header {
+  position: absolute;
+  left: 141px;
+  top: 105px;
+  width: 847px;
+  height: 174px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.frameConfirmBio__frameBtn {
+  position: absolute;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.15s ease;
+}
+.frameConfirmBio__frameBtn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+.frameConfirmBio__frameBtn:hover { transform: scale(1.02); }
+.frameConfirmBio__frameBtn--selected {
+  box-shadow: 0 0 0 6px #244A6D;
+  transform: scale(1.02);
+}
+
+.frameConfirmBio__img--160 {
+  left: 67px;
+  top: 454px;
+  width: 441px;
+  height: 639px;
+}
+
+.frameConfirmBio__img--161 {
+  left: 565px;
+  top: 454px;
+  width: 448px;
+  height: 649px;
+}
+
+/* BIO FRAME_CONFIRM 이전/다음 버튼 위치 */
+.screen--frameConfirm-bio .btnQuantityPrev {
+  left: 161px;
+  top: 1735px;
+  width: 284px;
+  height: 102px;
+}
+.screen--frameConfirm-bio .btnQuantityNext {
+  left: 634px;
+  top: 1735px;
+  width: 284px;
+  height: 102px;
+}
+
+/* BIO QUANTITY 이전/다음 버튼 위치 */
+.screen--quantity-bio .btnQuantityPrev,
+.btnBioQuantityPrev {
+  left: 161px;
+  top: 1154px;
+  width: 284px;
+  height: 102px;
+}
+.screen--quantity-bio .btnQuantityNext,
+.btnBioQuantityNext {
+  left: 634px;
+  top: 1154px;
+  width: 284px;
+  height: 102px;
+}
+
+/* BIO QUANTITY 카운트·버튼 위치 */
+.screen--quantity-bio .quantityCount {
+  top: 861px;
+}
+.screen--quantity-bio .btnQuantityMinus {
+  left: 209px;
+  top: 784px;
+}
+.screen--quantity-bio .btnQuantityPlus {
+  left: 728px;
+  top: 770px;
+}
+.screen--quantity-bio .quantityTitle { color: #000; }
+
+.screen--frameConfirm-designed .frameConfirm__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--color-designed);
+  border-radius: 30px;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+}
+
+.frameConfirm__title {
+  position: absolute;
+  margin: 0;
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 96px;
+  line-height: 1.5;
+  text-align: center;
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+}
+
+.screen--frameConfirm-basic .frameConfirm__title {
+  left: 0;
+  top: 34px;
+  width: 1080px;
+  color: var(--color-black);
+}
+
+.screen--frameConfirm-designed .frameConfirm__title {
+  left: 88px;
+  top: 38px;
+  width: 886px;
+  font-size: 76px;
+  color: var(--color-white);
+  white-space: nowrap;
+}
+
+.frameConfirm__next {
+  position: absolute;
+  z-index: 5;
+}
+
+.frameConfirm__next:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.screen--frameConfirm .frameConfirm__next {
+  left: 700px;
+  top: 1780px;
+  width: 284px;
+  height: 102px;
+  border-radius: 105px;
+  border: 7px solid var(--color-navy);
+  background: var(--color-white);
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 48px;
+  color: var(--color-navy);
+  cursor: pointer;
+}
+
+.screen--frameConfirm .frameConfirm__prev {
+  left: 96px;
+  top: 1780px;
+  width: 284px;
+  height: 102px;
+}
+
+/* 2_2 Designed: 10개 프레임 선택 */
+.frameConfirmDesigned__imgWrap {
+  position: absolute;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+.frameConfirmDesigned__imgWrap:hover { transform: scale(1.06); z-index: 2; }
+.frameConfirmDesigned__imgWrap--selected {
+  box-shadow: 0 0 0 4px var(--color-white);
+  transform: scale(1.02);
+  z-index: 1;
+}
+.frameConfirmDesigned__imgWrap--selected:hover { transform: scale(1.08); }
+.frameConfirmDesigned__imgWrap img {
+  width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none;
+}
+
+/* Row 1 */
+.fcd--경영 { left: 43px;  top: 326px; width: 190px; height: 307px; }
+.fcd--ai   { left: 244px; top: 326px; width: 190px; height: 307px; }
+.fcd--보건 { left: 445px; top: 326px; width: 190px; height: 307px; }
+.fcd--간호 { left: 646px; top: 326px; width: 190px; height: 307px; }
+.fcd--mc   { left: 847px; top: 326px; width: 190px; height: 307px; }
+
+/* Row 2 */
+.fcd--상심 { left: 43px;  top: 768px; width: 190px; height: 307px; }
+.fcd--약학 { left: 244px; top: 768px; width: 190px; height: 307px; }
+.fcd--바식 { left: 445px; top: 768px; width: 190px; height: 307px; }
+.fcd--세유 { left: 646px; top: 768px; width: 190px; height: 307px; }
+.fcd--시생 { left: 847px; top: 768px; width: 190px; height: 307px; }
+
+.frameConfirmDesigned__label {
+  position: absolute;
+  width: 190px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--color-white);
+  text-align: center;
+}
+
+/* Row 1 레이블 */
+.frameConfirmDesigned__label--경영 { left: 43px;  top: 653px; }
+.frameConfirmDesigned__label--ai   { left: 244px; top: 653px; }
+.frameConfirmDesigned__label--보건 { left: 445px; top: 653px; }
+.frameConfirmDesigned__label--간호 { left: 646px; top: 653px; }
+.frameConfirmDesigned__label--mc   { left: 847px; top: 653px; }
+
+/* Row 2 레이블 */
+.frameConfirmDesigned__label--상심 { left: 43px;  top: 1094px; }
+.frameConfirmDesigned__label--약학 { left: 244px; top: 1094px; }
+.frameConfirmDesigned__label--바식 { left: 445px; top: 1094px; }
+.frameConfirmDesigned__label--세유 { left: 646px; top: 1094px; }
+.frameConfirmDesigned__label--시생 { left: 847px; top: 1094px; }
+
+/* 2_1 Basic: 흑백/화이트 선택 버튼 */
+.frameConfirmBasic__btn {
+  position: absolute;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  width: 612px;
+  height: 792px;
+}
+.frameConfirmBasic__btn--black { left: 57px;  top: 200px; }
+.frameConfirmBasic__btn--white { left: 387px; top: 982px; }
+.frameConfirmBasic__btn:hover { transform: scale(1.02); }
+.frameConfirmBasic__btn--selected {
+  box-shadow: 0 0 0 6px var(--color-navy);
+}
+.frameConfirmBasic__preview {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+.frameConfirmBasic__label { display: none; }
+
+
+/* ══════════════════════════════════════
+   3_1 / 3_2 QUANTITY
+   ══════════════════════════════════════ */
+.screen--quantity {
+  border-radius: 30px;
+  position: relative;
+}
+.screen--quantity-basic    { background: var(--color-basic); }
+.screen--quantity-designed { background: var(--color-designed); }
+.screen--acTheme.screen--quantity { background: #52C482; }
+.screen--quantity-bio      { background: #FFDD6F; }
+
+.quantityTitle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 490px;
+  width: 361px;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-weight: 700;
+  font-size: 64px;
+  line-height: 1.3;
+  text-align: center;
+  margin: 0;
+}
+.screen--quantity-basic    .quantityTitle { color: #1e1e1e; }
+.screen--quantity-designed .quantityTitle { color: var(--color-white); }
+.screen--acTheme .quantityTitle { color: var(--color-white); }
+
+.quantityCount {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 719px;
+  width: 182px;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-weight: 700;
+  font-size: 128px;
+  line-height: 1.3;
+  text-align: center;
+  margin: 0;
+}
+.screen--quantity-basic    .quantityCount { color: var(--color-black); }
+.screen--quantity-designed .quantityCount { color: var(--color-white); }
+.screen--acTheme .quantityCount { color: var(--color-white); }
+
+.btnQuantitySymbol {
+  position: absolute;
+  border: none;
+  background: transparent;
+  font-family: var(--font-pretendard);
+  font-size: 200px;
+  line-height: 1.3;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-black);
+}
+.screen--quantity-designed .btnQuantitySymbol { color: var(--color-white); }
+.btnQuantitySymbol:hover { opacity: 0.8; }
+
+.btnQuantityMinus {
+  width: 85px;
+  height: 260px;
+  left: 244px;
+  top: 653px;
+}
+.btnQuantityPlus {
+  width: 109px;
+  height: 260px;
+  left: 746px;
+  top: 639px;
+}
+
+/* 공통 이전/다음 버튼 */
+.btnQuantityPrev,
+.btnQuantityNext {
+  position: absolute;
+  width: 475px;
+  height: 166px;
+  top: 980px;
+  border-radius: 105px;
+  border: 7px solid var(--color-navy);
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 1.3;
+  color: var(--color-navy);
+  cursor: pointer;
+}
+.btnQuantityNext {
+  left: 560px;
+  background: var(--color-white);
+}
+.btnQuantityPrev {
+  left: 87px;
+  background: rgba(255,255,255,0.37);
+}
+.btnQuantityPrev:hover,
+.btnQuantityNext:hover { opacity: 0.9; }
+
+
+/* ══════════════════════════════════════
+   4_1 CAMERA GUIDE
+   ══════════════════════════════════════ */
+.screen--cameraGuide {
+  position: relative;
+  background: var(--color-basic);
+  border-radius: 30px;
+}
+.screen--acTheme.screen--cameraGuide { background: #52C482; }
+.screen--bioTheme.screen--cameraGuide { background: #FFDD6F; }
+
+.cameraGuide__illus {
+  position: absolute;
+  left: 39px;
+  top: 107px;
+  width: 228px;
+  height: auto;
+  max-height: 512px;
+  object-fit: contain;
+}
+.cameraGuide__illus--bio {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 107px;
+  width: auto;
+  max-width: 880px;
+  height: 480px;
+  max-height: none;
+}
+
+.cameraGuide__text1 {
+  position: absolute;
+  left: 80px;
+  top: 700px;
+  width: 920px;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-size: 48px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--color-black);
+  margin: 0;
+}
+.screen--acTheme .cameraGuide__text1 { color: var(--color-white); }
+
+.cameraGuide__text2 {
+  position: absolute;
+  left: 80px;
+  top: 880px;
+  width: 920px;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-weight: 700;
+  font-size: 64px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--color-black);
+  margin: 0;
+}
+.screen--acTheme .cameraGuide__text2 { color: var(--color-white); }
+
+.btnCameraStart {
+  position: absolute;
+  left: 700px;
+  top: 1780px;
+  width: 284px;
+  height: 102px;
+  border-radius: 105px;
+  background: var(--color-white);
+  border: 7px solid var(--color-navy);
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 48px;
+  color: var(--color-navy);
+  cursor: pointer;
+}
+.btnCameraStart:hover { opacity: 0.95; }
+
+/* CAMERA GUIDE 화면에서는 하단 내비 버튼 고정 */
+.screen--cameraGuide .btnQuantityPrev,
+.screen--cameraGuide .btnCameraStart {
+  width: 284px;
+  height: 102px;
+  top: 1780px;
+}
+
+/* BIO 카메라 가이드 버튼 */
+.btnBioCameraGuidePrev {
+  left: 161px;
+  top: 1698px;
+  width: 284px;
+  height: 102px;
+}
+.btnBioCameraStart {
+  left: 634px;
+  top: 1698px;
+  width: 284px;
+  height: 102px;
+}
+
+
+/* ══════════════════════════════════════
+   4_3 SHOOTING
+   ══════════════════════════════════════ */
+.screen--shooting {
+  position: relative;
+  background: var(--color-bg);
+  border-radius: 30px;
+}
+.screen--acTheme.screen--shooting { background: #52C482; }
+.screen--acTheme .shootingTitle { color: var(--color-white); }
+.screen--bioTheme.screen--shooting { background: #FFDD6F; }
+
+.screen--bioTheme .shootingTitle {
+  left: 0;
+  top: 428px;
+  width: 1080px;
+}
+.screen--bioTheme .cameraBox {
+  left: 292px;
+  top: 611px;
+  width: 496px;
+  height: 697px;
+}
+.screen--bioTheme .shootingCountdown {
+  left: 506px;
+  top: 1366px;
+}
+.screen--bioTheme .shootingPhase {
+  left: 241px;
+  top: 1366px;
+  width: 598px;
+}
+
+.shootingTitle {
+  position: absolute;
+  left: 0;
+  top: 577px;
+  width: 1080px;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-weight: 700;
+  font-size: 96px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--color-black);
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.cameraBox {
+  position: absolute;
+  left: 255px;
+  top: 726px;
+  width: 570px;
+  height: 617px;
+  background: var(--color-black);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cameraBox video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scaleX(-1);
+}
+
+.cameraBox__captured {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scaleX(-1);
+}
+
+@keyframes shutterFlash {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+.shutterFlash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  pointer-events: none;
+  animation: shutterFlash 0.45s ease-out forwards;
+  z-index: 20;
+}
+
+.shootingCountdown {
+  position: absolute;
+  left: 509px;
+  top: 1515px;
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 96px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--color-black);
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  margin: 0;
+}
+
+.shootingPhase {
+  position: absolute;
+  left: 284px;
+  top: 1515px;
+  width: 513px;
+  font-family: var(--font-pretendard);
+  font-size: 48px;
+  text-align: center;
+  color: var(--color-black);
+  margin: 0;
+}
+
+
+/* ══════════════════════════════════════
+   5_LOADING / 7_PRINTING
+   ══════════════════════════════════════ */
+.screen--loading,
+.screen--printing {
+  position: relative;
+  background: var(--color-bg);
+  border-radius: 30px;
+}
+.screen--acTheme.screen--loading { background: #52C482; }
+
+.screen--loading .loadingTitle {
+  position: absolute;
+  left: 319px;
+  top: 711px;
+  width: 443px;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-weight: 700;
+  font-size: 96px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--color-black);
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  margin: 0;
+}
+.screen--acTheme .loadingTitle { color: var(--color-white); }
+
+.screen--loading .loadingSub {
+  position: absolute;
+  left: 130px;
+  top: 1100px;
+  width: 820px;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-size: 48px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--color-black);
+  margin: 0;
+}
+.screen--acTheme .loadingSub { color: var(--color-white); }
+
+.screen--loading .loadingSub2 {
+  position: absolute;
+  left: 130px;
+  top: 1200px;
+  width: 820px;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-size: 48px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--color-black);
+  margin: 0;
+}
+.screen--acTheme .loadingSub2 { color: var(--color-white); }
+
+.screen--loading .loadingProgress {
+  position: absolute;
+  left: 130px;
+  top: 1300px;
+  width: 820px;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-size: 36px;
+  text-align: center;
+  color: var(--color-black);
+  margin: 0;
+}
+.screen--acTheme .loadingProgress { color: var(--color-white); }
+
+.screen--printing .loadingTitle {
+  position: absolute;
+  left: 328px;
+  top: 711px;
+  width: 425px;
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 96px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--color-black);
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  margin: 0;
+}
+
+.screen--printing .loadingSub {
+  position: absolute;
+  left: 130px;
+  top: 1100px;
+  width: 820px;
+  font-family: var(--font-pretendard);
+  font-size: 48px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.screen--printing .printingError {
+  position: absolute;
+  left: 130px;
+  top: 1200px;
+  width: 820px;
+  text-align: center;
+}
+
+
+/* ══════════════════════════════════════
+   6_SELECT
+   ══════════════════════════════════════ */
+.screen--select {
+  position: relative;
+  background: var(--color-bg);
+  border-radius: 30px;
+}
+
+.selectTitle {
+  position: absolute;
+  left: 0;
+  top: 64px;
+  width: 1080px;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-weight: 700;
+  font-size: 96px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--color-black);
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  margin: 0;
+}
+
+.screen--acTheme.screen--select .selectTitle {
+  left: 2px;
+  top: 17px;
+}
+
+/* FramePreview: 4×6(287×432px) → 534×801px 표시, scale = 534/287 ≈ 1.8606 */
+.selectFramePreviewWrap {
+  position: absolute;
+  left: 273px;
+  top: 169px;
+  width: 534px;
+  height: 801px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* 동숲(AC) 선택: 프레임 대신 같은 자리 — 선택 사진 미리보기 */
+.selectAcPlaceholder {
+  position: absolute;
+  left: 273px;
+  top: 169px;
+  width: 534px;
+  height: 801px;
+  border-radius: 4px;
+  background: var(--color-white);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.selectAcPlaceholder__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.framePreview {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 287px;
+  height: 432px;
+  overflow: hidden;
+  transform: scale(1.8606);
+  transform-origin: top left;
+  text-align: center;
+  font-family: "Gowun Dodum", var(--font-pretendard);
+}
+
+.framePreview__quote {
+  position: absolute;
+  top: 348px;
+  left: 33px;
+  width: 220px;
+  height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: pre-wrap;
+  font-family: "Gowun Dodum", var(--font-pretendard);
+  font-weight: 400;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.framePreview__brand {
+  position: absolute;
+  top: 371px;
+  left: 88px;
+  width: 111px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Eulyoo1945", var(--font-pretendard);
+  font-weight: 400;
+  font-size: 17px;
+  pointer-events: none;
+}
+
+/* 샷 그리드: 3×2 (6장, 카드 크기 = 인쇄 슬롯 실제 표시 크기 240×260px) */
+.selectShotsGrid {
+  position: absolute;
+  left: 155px;
+  top: 1026px;
+  display: grid;
+  grid-template-columns: repeat(3, 240px);
+  grid-template-rows: repeat(2, 260px);
+  column-gap: 25px;
+  row-gap: 25px;
+}
+
+.shotCard {
+  position: relative;
+  width: 240px;
+  height: 260px;
+  border: none;
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+  background: var(--color-white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.2s ease;
+}
+.shotCard:disabled { cursor: not-allowed; opacity: 0.6; }
+.shotCard.selected { box-shadow: 0 0 0 4px var(--color-designed); }
+.shotCard img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.shotCard__placeholder { font-family: var(--font-pretendard); font-size: 14px; color: #888; }
+.shotCard__order {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-designed);
+  color: var(--color-white);
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 액션 영역 */
+.selectActions {
+  position: absolute;
+  left: 155px;
+  top: 1620px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 663px;
+  gap: 11px;
+  flex-wrap: wrap;
+}
+
+.selectHint {
+  font-family: var(--font-pretendard);
+  font-size: 16px;
+  color: #555;
+  margin: 0;
+}
+
+.btnPrint {
+  width: 235px;
+  height: 102px;
+  border-radius: 105px;
+  background: var(--color-white);
+  border: 7px solid var(--color-navy);
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 48px;
+  color: var(--color-navy);
+  cursor: pointer;
+}
+.btnPrint:disabled { opacity: 0.5; cursor: not-allowed; }
+
+
+/* ── BIO SELECT 전용 ── */
+.screen--bioTheme.screen--select { background: #F3F3F6; }
+
+/* Select 타이틀 — Figma: left:381 top:49 width:316 */
+.screen--bioTheme.screen--select .selectTitle {
+  left: 381px;
+  top: 49px;
+  width: 316px;
+  z-index: 3;
+}
+
+/* 사진 슬롯 — 캔버스 절대좌표
+   슬롯 좌표 = Frame_selected(left:227, top:52) + Select1~4 상대좌표 */
+.selectBioPreviewSlot {
+  position: absolute;
+  width: 251px;
+  height: 353px;
+  overflow: hidden;
+  background: #000;
+}
+/* Select1: 227+62=289, 52+55=107 */
+.selectBioPreviewSlot--0 { left: 289px; top: 107px; }
+/* Select2: 227+313=540, 52+55=107 */
+.selectBioPreviewSlot--1 { left: 540px; top: 107px; }
+/* Select3: 227+62=289, 52+419=471 */
+.selectBioPreviewSlot--2 { left: 289px; top: 471px; }
+/* Select4: 227+313=540, 52+419=471 */
+.selectBioPreviewSlot--3 { left: 540px; top: 471px; }
+
+/* 프레임 오버레이 — Figma: left:227 top:52 width:626 height:908 */
+.selectBioFrameOverlay {
+  position: absolute;
+  left: 227px;
+  top: 52px;
+  width: 626px;
+  height: 908px;
+  pointer-events: none;
+  z-index: 2;
+  object-fit: fill;
+}
+
+/* 촬영 썸네일 그리드 — Figma: col left 145/419/693, row top 1007/1393
+   gap: 419-145-241=33px (col), 1393-1007-339=47px (row) */
+.selectBioShotsGrid {
+  position: absolute;
+  left: 145px;
+  top: 1007px;
+  display: grid;
+  grid-template-columns: repeat(3, 241px);
+  grid-template-rows: repeat(2, 339px);
+  column-gap: 33px;
+  row-gap: 47px;
+}
+
+/* BIO 그리드 내 shotCard 크기 재정의 */
+.selectBioShotsGrid .shotCard {
+  width: 241px;
+  height: 339px;
+}
+
+/* 액션 영역 — 2행 끝: 1393+339=1732, 아래 여백 */
+.selectBioActions {
+  position: absolute;
+  left: 145px;
+  top: 1760px;
+  width: 790px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ══════════════════════════════════════
+   7_2 DESIGN (Designed Frame Only)
+   ══════════════════════════════════════ */
+.screen--design {
+  position: relative;
+  background: var(--color-bg);
+  border-radius: 30px;
+}
+
+.design__title {
+  position: absolute;
+  left: 0;
+  top: 64px;
+  width: 1080px;
+  text-align: center;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-weight: 700;
+  font-size: 96px;
+  color: var(--color-black);
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  margin: 0;
+}
+
+/* 프레임 프리뷰 컨테이너: SELECT와 동일한 크기 */
+.design__previewContainer {
+  position: absolute;
+  left: 273px;
+  top: 174px;
+  width: 534px;
+  height: 801px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* 드래그 스티커 오버레이 이미지 */
+.design__dragSticker {
+  position: absolute;
+  object-fit: contain;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
+  z-index: 10;
+}
+.design__dragSticker:active { cursor: grabbing; }
+
+/* 섹션 레이블 */
+.design__sectionLabel {
+  position: absolute;
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-weight: 700;
+  font-size: 64px;
+  color: var(--color-black);
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  margin: 0;
+}
+.design__stickerLabel { left: 40px;  top: 1010px; }
+.design__colourLabel  { left: 40px;  top: 1360px; }
+
+/* ── 스티커 팔레트: 3행 × 12열 ── */
+.design__stickerPalette {
+  position: absolute;
+  left: 40px;
+  top: 1085px;
+  width: 1000px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(3, 74px);
+  row-gap: 6px;
+}
+
+.design__stickerPaletteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto;
+  border: 3px solid transparent;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.7);
+  cursor: pointer;
+  padding: 6px;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+.design__stickerPaletteBtn:hover  { transform: scale(1.08); background: #fff; }
+.design__stickerPaletteBtn--selected {
+  border-color: var(--color-navy);
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--color-navy);
+  transform: scale(1.05);
+}
+
+.design__stickerPaletteIcon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* ── 컬러 팔레트: 2행 × 7열 ── */
+.design__colourPalette {
+  position: absolute;
+  left: 40px;
+  top: 1440px;
+  width: 1000px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(2, 96px);
+  row-gap: 12px;
+}
+
+.design__colourBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.12s ease;
+}
+.design__colourBtn:hover { transform: scale(1.08); }
+
+.design__colourCircle {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 4px solid rgba(0,0,0,0.12);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.design__colourBtn--selected .design__colourCircle {
+  border-color: var(--color-navy);
+  box-shadow: 0 0 0 4px var(--color-navy);
+}
+
+.design__colourName {
+  font-family: var(--font-pretendard);
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ── 스티커 확정/삭제 컨트롤 (V / X) ── */
+.design__stickerControls {
+  position: absolute;
+  display: flex;
+  gap: 20px;
+  transform: translateX(-50%);
+  z-index: 20;
+}
+
+.design__stickerCtrlBtn {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: none;
+  font-size: 32px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  transition: transform 0.12s ease;
+}
+.design__stickerCtrlBtn:hover { transform: scale(1.1); }
+.design__stickerCtrlBtn--confirm { background: #22c55e; color: #fff; }
+.design__stickerCtrlBtn--delete  { background: #ef4444; color: #fff; }
+
+/* DESIGN 화면 하단 내비 버튼 */
+.screen--design .btnQuantityPrev,
+.screen--design .btnQuantityNext {
+  width: 284px;
+  height: 102px;
+  top: 1790px;
+}
+.screen--design .btnQuantityPrev { left: 96px; }
+.screen--design .btnQuantityNext { left: 700px; }
+
+
+/* ══════════════════════════════════════
+   8_END
+   ══════════════════════════════════════ */
+.screen--end {
+  position: relative;
+  background: var(--color-bg);
+  border-radius: 30px;
+}
+
+.endTitle {
+  position: absolute;
+  left: 403px;
+  top: 711px;
+  width: 274px;
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 96px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--color-black);
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  margin: 0;
+}
+
+.endSub {
+  position: absolute;
+  left: 130px;
+  top: 1100px;
+  width: 820px;
+  font-family: var(--font-pretendard);
+  font-size: 48px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.btnEnd {
+  position: absolute;
+  left: 423px;
+  top: 1480px;
+  width: 234px;
+  height: 102px;
+  border-radius: 105px;
+  background: var(--color-navy);
+  border: 7px solid var(--color-navy);
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 48px;
+  color: var(--color-white);
+  cursor: pointer;
+}
+
+
+/* ══════════════════════════════════════
+   공통
+   ══════════════════════════════════════ */
+.errorText {
+  color: #b22222;
+  font-weight: 600;
+  font-family: var(--font-pretendard);
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+/* 운영자 오버레이 */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+  padding: 43px 24px;
+}
+
+.overlayCard {
+  width: min(1000px, 100%);
+  background: rgba(255,255,255,0.96);
+  border: 12px solid var(--color-basic);
+  border-radius: 40px;
+  padding: 60px 32px;
+  max-height: 1728px;
+  overflow-y: auto;
+}
+
+.overlayCard h3 {
+  font-family: var(--font-pretendard);
+  font-size: 64px;
+  color: #e77437;
+  text-align: center;
+  margin-top: 0;
+}
+
+.overlayCard input {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  border: 2px solid #ddd;
+  padding: 0 14px;
+  margin: 8px 0 12px;
+  font-size: 16px;
+}
+
+.overlayCard select {
+  flex: 1;
+  min-width: 220px;
+  height: 48px;
+  border-radius: 12px;
+  border: 2px solid #ddd;
+  padding: 0 14px;
+  background: var(--color-white);
+  font-size: 16px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.overlayCard button {
+  border-radius: 105px;
+  padding: 12px 24px;
+  font-family: var(--font-pretendard);
+  font-size: 24px;
+  border: 2px solid var(--color-navy);
+  background: var(--color-white);
+  color: var(--color-navy);
+  cursor: pointer;
+}
+
+.failedList {
+  margin: 12px 0;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.failedItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px 10px;
+  margin-bottom: 8px;
+}
+
+.failedItem p {
+  margin: 2px 0;
+  font-size: 13px;
+}
+
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── 동물의 숲 모드 ── */
+.screen--acTheme .btnQuantityPrev,
+.screen--acTheme .btnCameraStart,
+.screen--acTheme .quantityTitle,
+.screen--acTheme .shootingTitle,
+.screen--acTheme .selectTitle,
+.screen--acTheme .loadingTitle,
+.screen--acTheme .cameraGuide__text1,
+.screen--acTheme .cameraGuide__text2 {
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard), sans-serif;
+}
+
+/* ── AC_RESULT 화면 ── */
+.screen--acResult {
+  position: relative;
+  width: 1080px;
+  height: 1920px;
+  border-radius: 30px;
+  background: #FFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+/* 포토 프레임 */
+.screen--acResult .acResultCard {
+  display: inline-flex;
+  padding: 51px 49px 38px 48px;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6.535px;
+  background: #52C482;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* 결과 이미지 */
+.screen--acResult .acResultImage {
+  width: 863px;
+  height: 1034px;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* 프레임 카드 오버레이 — 사용 안 함 (숨김) */
+.screen--acResult .acResultFrameCard {
+  display: none;
+}
+
+/* 로고 */
+.screen--acResult .acResultLogo {
+  width: 561.837px;
+  height: 310.462px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* 인쇄 버튼 */
+.screen--acResult .acResultActions {
+  flex-shrink: 0;
+}
+
+.screen--acResult .acResultPrint {
+  width: 473px;
+  height: 166px;
+  border-radius: 105px;
+  border: 7px solid var(--color-navy);
+  background: var(--color-white);
+  font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
+  font-size: 48px;
+  font-weight: 700;
+  color: #244A6D;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+

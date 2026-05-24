@@ -1,0 +1,8 @@
+﻿/* Kanit, ABeeZee, Bigshot One: Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&family=ABeeZee&family=Bigshot+One&display=swap');
+/* The Jamsil OTF: Google Fonts 미제공 폰트 — 키오스크 OS에 설치 필요 */
+
+body {
+  margin: 0;
+  line-height: normal;
+}

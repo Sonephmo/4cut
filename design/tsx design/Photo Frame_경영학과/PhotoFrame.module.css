@@ -1,0 +1,101 @@
+.photoFrame {
+  width: 100%;
+  height: 792px;
+  position: relative;
+  background-color: #f3ebd5;
+  overflow: hidden;
+  text-align: center;
+  font-size: 15px;
+  color: #372a15;
+  font-family: 'The Jamsil OTF';
+}
+.photoFrameChild {
+  position: absolute;
+  top: 324px;
+  left: 20px;
+  background-color: #fff;
+  width: 283px;
+  height: 306px;
+}
+.photoFrameItem {
+  position: absolute;
+  top: 324px;
+  left: 308px;
+  background-color: #fff;
+  width: 283px;
+  height: 306px;
+}
+.photoFrameInner {
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  background-color: #fff;
+  width: 283px;
+  height: 306px;
+}
+.rectangleDiv {
+  position: absolute;
+  top: 14px;
+  left: 308px;
+  background-color: #fff;
+  width: 283px;
+  height: 306px;
+}
+.icon {
+  position: absolute;
+  top: 529px;
+  left: 317px;
+  width: 111.3px;
+  height: 96.5px;
+  object-fit: contain;
+}
+.icon2 {
+  position: absolute;
+  top: 220px;
+  left: 185px;
+  width: 121px;
+  height: 99.9px;
+  object-fit: contain;
+}
+.div {
+  position: absolute;
+  top: 656px;
+  left: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 392px;
+}
+.b {
+  position: absolute;
+  top: 702px;
+  left: 107px;
+  font-size: 20px;
+  display: flex;
+  font-family: Kanit;
+  align-items: center;
+  justify-content: center;
+  width: 392px;
+  height: 90px;
+}
+.div2 {
+  position: absolute;
+  top: 692px;
+  left: 254px;
+  font-size: 16px;
+  font-family: ABeeZee;
+}
+.challengeChanceChange {
+  position: absolute;
+  top: 617px;
+  left: 57px;
+  font-size: 31px;
+  font-family: 'Bigshot One';
+  white-space: pre-wrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 498px;
+  height: 109px;
+}
+

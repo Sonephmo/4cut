@@ -1,0 +1,145 @@
+import dotenv from "dotenv";
+import { fileURLToPath } from "node:url";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { createClient } from "@supabase/supabase-js";
+import { silentPrintImage } from "./print.js";
+/** pkg EXE는 작업 디렉터리와 무관하게 실행 파일 폴더의 .env 를 씁니다. */
+function getAppDirectory() {
+    const proc = process;
+    if (proc.pkg != null) {
+        return path.dirname(process.execPath);
+    }
+    return path.dirname(fileURLToPath(new URL(import.meta.url)));
+}
+const envPath = path.join(getAppDirectory(), ".env");
+dotenv.config({ path: envPath });
+const url = process.env.SUPABASE_URL;
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const printerName = process.env.PRINTER_DEVICE_NAME ?? "Canon SELPHY CP1500";
+const skipPrint = (process.env.SKIP_PRINT ?? "false").toLowerCase() === "true";
+if (!url || !serviceKey) {
+    console.error([
+        "SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY 가 없습니다.",
+        `  .env 위치(예상): ${envPath}`,
+        "  .env.example 을 복사해 .env 로 저장한 뒤 값을 채워 넣으세요."
+    ].join("\n"));
+    process.exit(1);
+}
+const supabase = createClient(url, serviceKey, {
+    auth: { persistSession: false, autoRefreshToken: false }
+});
+let processing = false;
+const queue = [];
+async function downloadToTemp(filePath) {
+    const { data, error } = await supabase.storage.from("photos").download(filePath);
+    if (error || !data) {
+        throw new Error(`STORAGE_DOWNLOAD: ${error?.message ?? "no blob"}`);
+    }
+    const buf = Buffer.from(await data.arrayBuffer());
+    const tmp = path.join(os.tmpdir(), `haesol_job_${Date.now()}_${path.basename(filePath)}`);
+    await fs.writeFile(tmp, buf);
+    return tmp;
+}
+async function processJob(row) {
+    const { id, file_path: filePath, copies } = row;
+    const n = Math.min(Math.max(copies, 1), 99);
+    const { data: claimed } = await supabase
+        .from("print_jobs")
+        .update({ status: "printing", error_message: null })
+        .eq("id", id)
+        .eq("status", "pending")
+        .select("id")
+        .maybeSingle();
+    if (!claimed) {
+        console.log(`[job] skip (not pending or claimed): ${id}`);
+        return;
+    }
+    let localPath = null;
+    try {
+        localPath = await downloadToTemp(filePath);
+        if (skipPrint) {
+            console.log(`[job] SKIP_PRINT=true → 인쇄 생략: ${filePath}`);
+        }
+        else {
+            for (let i = 0; i < n; i++) {
+                console.log(`[job] print ${i + 1}/${n} → ${printerName}`);
+                await silentPrintImage({ imagePath: localPath, deviceName: printerName });
+            }
+        }
+        await supabase
+            .from("print_jobs")
+            .update({ status: "done", error_message: null })
+            .eq("id", id);
+        console.log(`[job] done ${id}`);
+    }
+    catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        console.error(`[job] failed ${id}`, msg);
+        await supabase.from("print_jobs").update({ status: "failed", error_message: msg }).eq("id", id);
+    }
+    finally {
+        if (localPath) {
+            await fs.unlink(localPath).catch(() => undefined);
+        }
+    }
+}
+async function drainQueue() {
+    if (processing) {
+        return;
+    }
+    processing = true;
+    try {
+        while (queue.length > 0) {
+            const row = queue.shift();
+            if (row) {
+                await processJob(row);
+            }
+        }
+    }
+    finally {
+        processing = false;
+    }
+}
+function enqueue(row) {
+    queue.push(row);
+    void drainQueue();
+}
+async function loadPending() {
+    const { data, error } = await supabase
+        .from("print_jobs")
+        .select("id, file_path, copies, status")
+        .eq("status", "pending")
+        .order("created_at", { ascending: true });
+    if (error) {
+        console.error("loadPending", error);
+        return;
+    }
+    for (const row of data ?? []) {
+        enqueue(row);
+    }
+}
+console.log(`[printer-app] device=${printerName} skipPrint=${skipPrint}`);
+async function main() {
+    await loadPending();
+    supabase
+        .channel("print_jobs_inserts")
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "print_jobs" }, (payload) => {
+        const row = payload.new;
+        if (row.status === "pending") {
+            enqueue(row);
+        }
+    })
+        .subscribe((status) => {
+        console.log("[realtime]", status);
+    });
+}
+process.on("SIGINT", () => {
+    console.log("종료");
+    process.exit(0);
+});
+main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+});
