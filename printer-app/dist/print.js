@@ -8,9 +8,10 @@ const execFileAsync = promisify(execFile);
  * Windows: System.Drawing.Printing (electron/printWindow.ts 와 동일)
  */
 export async function silentPrintImage(params) {
-    const { imagePath, deviceName } = params;
+    const { imagePath, deviceName, landscape } = params;
     const csImage = imagePath.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
     const csDevice = deviceName.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+    const csLandscape = landscape === true ? "true" : landscape === false ? "false" : "auto";
     const psScript = `
 $ErrorActionPreference = 'Stop'
 
@@ -21,7 +22,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Printing;
 
 public static class HaesolPrinter {
-    public static string Print(string imagePath, string printerName) {
+    public static string Print(string imagePath, string printerName, string landscapeMode) {
         Bitmap bmp = null;
         PrintDocument pd = null;
         try {
@@ -38,7 +39,10 @@ public static class HaesolPrinter {
             pd.PrintController            = new StandardPrintController();
             pd.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
             pd.OriginAtMargins            = false;
-            pd.DefaultPageSettings.Landscape = (bmp.Width > bmp.Height);
+            bool isLandscape = landscapeMode == "true"  ? true
+                             : landscapeMode == "false" ? false
+                             : (bmp.Width > bmp.Height);
+            pd.DefaultPageSettings.Landscape = isLandscape;
 
             foreach (PaperSize ps in pd.PrinterSettings.PaperSizes) {
                 string n = ps.PaperName.ToLower();
@@ -94,7 +98,7 @@ public static class HaesolPrinter {
 }
 "@
 
-$result = [HaesolPrinter]::Print("${csImage}", "${csDevice}")
+$result = [HaesolPrinter]::Print("${csImage}", "${csDevice}", "${csLandscape}")
 Write-Output "[print] $result"
 if ($result -like "ERR:*") { throw $result }
 `.trim();

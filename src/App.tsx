@@ -248,8 +248,6 @@ export function App() {
       throw new Error("CANVAS_CONTEXT_FAIL");
     }
 
-    context.translate(canvas.width, 0);
-    context.scale(-1, 1);
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     const blob = await new Promise<Blob>((resolve, reject) => {
       canvas.toBlob(
@@ -1076,7 +1074,7 @@ export function App() {
             <div className="mainCardBio__comingSoon">COMING SOON</div>
           </button>
 
-          <span className="mainVersion">버전 0.95a</span>
+          <span className="mainVersion">버전 0.96a</span>
         </>
       )}
 

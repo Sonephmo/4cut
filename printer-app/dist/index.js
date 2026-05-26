@@ -1,30 +1,19 @@
-import dotenv from "dotenv";
-import { fileURLToPath } from "node:url";
+import "dotenv/config";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { silentPrintImage } from "./print.js";
-/** pkg EXE는 작업 디렉터리와 무관하게 실행 파일 폴더의 .env 를 씁니다. */
-function getAppDirectory() {
-    const proc = process;
-    if (proc.pkg != null) {
-        return path.dirname(process.execPath);
-    }
-    return path.dirname(fileURLToPath(new URL(import.meta.url)));
-}
-const envPath = path.join(getAppDirectory(), ".env");
-dotenv.config({ path: envPath });
 const url = process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const printerName = process.env.PRINTER_DEVICE_NAME ?? "Canon SELPHY CP1500";
 const skipPrint = (process.env.SKIP_PRINT ?? "false").toLowerCase() === "true";
+const landscapeEnv = (process.env.LANDSCAPE ?? "").toLowerCase();
+const landscape = landscapeEnv === "true" ? true :
+    landscapeEnv === "false" ? false :
+        undefined;
 if (!url || !serviceKey) {
-    console.error([
-        "SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY 가 없습니다.",
-        `  .env 위치(예상): ${envPath}`,
-        "  .env.example 을 복사해 .env 로 저장한 뒤 값을 채워 넣으세요."
-    ].join("\n"));
+    console.error("SUPABASE_URL 및 SUPABASE_SERVICE_ROLE_KEY 를 .env 에 설정하세요.");
     process.exit(1);
 }
 const supabase = createClient(url, serviceKey, {
@@ -65,7 +54,7 @@ async function processJob(row) {
         else {
             for (let i = 0; i < n; i++) {
                 console.log(`[job] print ${i + 1}/${n} → ${printerName}`);
-                await silentPrintImage({ imagePath: localPath, deviceName: printerName });
+                await silentPrintImage({ imagePath: localPath, deviceName: printerName, landscape });
             }
         }
         await supabase
@@ -120,26 +109,21 @@ async function loadPending() {
         enqueue(row);
     }
 }
-console.log(`[printer-app] device=${printerName} skipPrint=${skipPrint}`);
-async function main() {
-    await loadPending();
-    supabase
-        .channel("print_jobs_inserts")
-        .on("postgres_changes", { event: "INSERT", schema: "public", table: "print_jobs" }, (payload) => {
-        const row = payload.new;
-        if (row.status === "pending") {
-            enqueue(row);
-        }
-    })
-        .subscribe((status) => {
-        console.log("[realtime]", status);
-    });
-}
+const landscapeLabel = landscape === true ? "forced-landscape" : landscape === false ? "forced-portrait" : "auto";
+console.log(`[printer-app] device=${printerName} skipPrint=${skipPrint} landscape=${landscapeLabel}`);
+await loadPending();
+supabase
+    .channel("print_jobs_inserts")
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "print_jobs" }, (payload) => {
+    const row = payload.new;
+    if (row.status === "pending") {
+        enqueue(row);
+    }
+})
+    .subscribe((status) => {
+    console.log("[realtime]", status);
+});
 process.on("SIGINT", () => {
     console.log("종료");
     process.exit(0);
-});
-main().catch((e) => {
-    console.error(e);
-    process.exit(1);
 });
