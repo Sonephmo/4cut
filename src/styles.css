@@ -253,20 +253,21 @@ html, body {
 }
 .mainCardDesigned__sub {
   position: absolute;
-  left: -11px;
+  left: 16px;
   top: 76px;
-  width: 450px;
+  width: 395px;
   height: 104px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   font-family: "Cafe24 Ssurround OTF", var(--font-pretendard);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #FEFEE9;
   text-shadow: 0 4px 4px rgba(0,0,0,0.25);
   line-height: 26px;
+  margin: 0;
 }
 
 /* Designed 카드 캐릭터 이미지 (가로 flat 배열) */
@@ -725,15 +726,15 @@ html, body {
 .btnQuantitySymbol:hover { opacity: 0.8; }
 
 .btnQuantityMinus {
-  width: 85px;
+  width: 160px;
   height: 260px;
-  left: 244px;
+  left: 207px;
   top: 653px;
 }
 .btnQuantityPlus {
-  width: 109px;
+  width: 160px;
   height: 260px;
-  left: 746px;
+  left: 721px;
   top: 639px;
 }
 
@@ -1261,7 +1262,7 @@ html, body {
 }
 
 .btnPrint {
-  width: 235px;
+  width: 320px;
   height: 102px;
   border-radius: 105px;
   background: var(--color-white);
@@ -1568,9 +1569,9 @@ html, body {
 
 .btnEnd {
   position: absolute;
-  left: 423px;
+  left: 380px;
   top: 1480px;
-  width: 234px;
+  width: 320px;
   height: 102px;
   border-radius: 105px;
   background: var(--color-navy);
@@ -1781,4 +1782,93 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   white-space: nowrap;
   font-weight: 400;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Keep short labels on one line; Korean guidance wraps at word boundaries. */
+.screen button {
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.screen p {
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+.quantityTitle,
+.cameraGuide__text2,
+.endTitle {
+  white-space: nowrap;
+}
+.screen--loading .loadingTitle,
+.screen--printing .loadingTitle {
+  left: 130px;
+  width: 820px;
+  white-space: nowrap;
+}
+.screen--loading .loadingSub2,
+.screen--printing .printingError {
+  top: 1280px;
+}
+.screen--loading .loadingProgress {
+  top: 1440px;
+}
+.selectActions {
+  left: 155px;
+  width: 770px;
+  column-gap: 24px;
+}
+.selectActions .btnPrint,
+.selectBioActions .btnPrint {
+  flex-shrink: 0;
+}
+.selectActions .errorText {
+  flex-basis: 100%;
+  order: 3;
+  max-height: 120px;
+  overflow: auto;
+}
+.selectBioActions {
+  top: 1742px;
+}
+.selectBioActions .btnPrint {
+  height: 72px;
+  font-size: 36px;
+}
+.framePreview__quote,
+.framePreview__brand {
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.flowNav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 28px;
+  height: 72px;
+  z-index: 30;
+  pointer-events: none;
+}
+.flowNav button {
+  position: absolute;
+  height: 72px;
+  border: 3px solid var(--color-navy);
+  border-radius: 40px;
+  background: #fff;
+  color: var(--color-navy);
+  font-size: 28px;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.flowNav__home {
+  left: 450px;
+  width: 180px;
+}
+.flowNav__back {
+  left: 96px;
+  width: 284px;
+}
+.flowNav button:focus-visible {
+  outline: 4px solid var(--color-navy);
+  outline-offset: 5px;
 }

@@ -380,6 +380,16 @@ export function App() {
     if (!ok) {
       return;
     }
+    revokeShotUrls(shotsRef.current);
+    setShots(createShots(isAnimalCrossingFrame(frameId) ? SHOT_TOTAL_AC : SHOT_TOTAL_DEFAULT));
+    setLastCapturedUrl(null);
+    setShowFlash(false);
+    setCommittedStickers([]);
+    setActiveSticker(null);
+    setAcTransformError(null);
+    if (transformedImageUrl?.startsWith("blob:")) URL.revokeObjectURL(transformedImageUrl);
+    setTransformedImageUrl(null);
+    acPrintReadyRef.current = null;
     setStep(isAnimalCrossingFrame(frameId) ? "AC_SHOOTING" : "SHOOTING");
     setCurrentShot(1);
     setCountdown(COUNTDOWN_SECONDS);
@@ -543,7 +553,7 @@ export function App() {
         const sid = session.uuid;
         acPrintReadyRef.current = (async () => {
           const blob = await composeAnimalCrossingPrint(outUrl);
-          const filePath = `${sid}.png`;
+          const filePath = `${sid}-${crypto.randomUUID()}.png`;
           const { error } = await supabase.storage.from("photos").upload(filePath, blob, {
             contentType: "image/png",
             upsert: true,
@@ -551,6 +561,7 @@ export function App() {
           if (error) throw error;
           return filePath;
         })();
+        void acPrintReadyRef.current.catch(() => undefined);
       }
 
       setStep("AC_RESULT");
@@ -588,7 +599,7 @@ export function App() {
         ? await acPrintReadyRef.current
         : await (async () => {
             const blob = await composeAnimalCrossingPrint(transformedImageUrl);
-            const fp = `${session.uuid}.png`;
+            const fp = `${session.uuid}-${crypto.randomUUID()}.png`;
             const { error } = await supabase.storage.from("photos").upload(fp, blob, {
               contentType: "image/png",
               upsert: true,
@@ -650,6 +661,20 @@ export function App() {
     setJobActive(false);
     setPrintJobFilePath(null);
     stopCamera();
+  };
+
+  const goHome = () => {
+    const busy = step === "SHOOTING" || step === "AC_SHOOTING" ||
+      step === "LOADING" || step === "AC_TRANSFORMING" || step === "PRINTING";
+    if (busy) {
+      const message = step === "PRINTING" || step === "LOADING"
+        ? "홈으로 이동할까요? 이미 접수된 인쇄는 계속 진행될 수 있습니다."
+        : "진행 중인 촬영·변환을 종료하고 홈으로 이동할까요?";
+      if (!window.confirm(message)) return;
+    }
+    stopCamera();
+    // Discard pending async callbacks so they cannot reopen an old session.
+    window.location.reload();
   };
 
   const openOperatorPanel = async () => {
@@ -1202,7 +1227,7 @@ export function App() {
 
       {step === "QUANTITY" && (
         <>
-          <h1 className="quantityTitle">인쇄 갯수</h1>
+          <h1 className="quantityTitle">인쇄 매수</h1>
           <div className="quantityCount">{copies}</div>
           <button type="button" className="btnQuantitySymbol btnQuantityMinus" onClick={() => setCopies((v) => Math.max(1, v - 1))} aria-label="감소">−</button>
           <button type="button" className="btnQuantitySymbol btnQuantityPlus" onClick={() => setCopies((v) => Math.min(4, v + 1))} aria-label="증가">+</button>
@@ -1221,7 +1246,7 @@ export function App() {
             ? <img src={asset("bh_bio_frame/image 153.png")} alt="" className="cameraGuide__illus cameraGuide__illus--bio" />
             : <img src={asset("Group 8.png")} alt="" className="cameraGuide__illus" />
           }
-          <p className="cameraGuide__text1">잠시 후 촬영이 시작됩니다<br />마음에드는 포즈를&nbsp;&nbsp;미리 생각해두세요!!</p>
+          <p className="cameraGuide__text1">잠시 후 촬영이 시작됩니다<br />마음에 드는 포즈를 미리 생각해 두세요!</p>
           <p className="cameraGuide__text2">촬영은 총 {isAnimalCrossingFrame(frameId) ? SHOT_TOTAL_AC : isBio ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT}번 진행됩니다</p>
           {cameraError && <p className="errorText">{cameraError}</p>}
           <button type="button" className={isBio ? "btnQuantityPrev btnBioCameraGuidePrev" : "btnQuantityPrev"} onClick={() => setStep("QUANTITY")}>이전</button>
@@ -1542,7 +1567,7 @@ export function App() {
       {(step === "LOADING" || step === "AC_TRANSFORMING") && (
         <div style={{ position: "absolute", inset: 0, background: isAnimalCrossingFrame(frameId) ? "#52C482" : "#f3f3f6", borderRadius: "30px" }}>
           <h1 className="loadingTitle">Loading...</h1>
-          {!isAnimalCrossingFrame(frameId) && <p className="loadingSub">차의대의 새로운 마스코트! 병헌이와 비오!</p>}
+          {!isAnimalCrossingFrame(frameId) && <p className="loadingSub">차의대의 새로운 마스코트!<br />병헌이와 비오!</p>}
           <p className="loadingSub2">{loadingText}</p>
           <p className="loadingProgress">진행률: {job?.progress ?? 0}%</p>
         </div>
@@ -1572,7 +1597,7 @@ export function App() {
       {step === "PRINTING" && (
         <div style={{ position: "absolute", inset: 0, background: "#f3f3f6", borderRadius: "30px" }}>
           <h1 className="loadingTitle">Printing...</h1>
-          <p className="loadingSub">차의대의 새로운 마스코트! 병헌이와 비오!</p>
+          <p className="loadingSub">차의대의 새로운 마스코트!<br />병헌이와 비오!</p>
               {job?.status === "FAILED_PRINT" && (
             <p className="errorText printingError">
               {job.errorMessage?.startsWith("SHOT_NOT_FOUND")
@@ -1595,6 +1620,17 @@ export function App() {
         </>
       )}
 
+      {step !== "MAIN" && (
+        <nav className="flowNav" aria-label="화면 이동">
+          {(step === "SELECT" || step === "AC_SELECT" || step === "AC_RESULT") && (
+            <button type="button" className="flowNav__back" onClick={() => {
+              setAcTransformError(null);
+              setStep(step === "AC_RESULT" ? "AC_SELECT" : isAnimalCrossingFrame(frameId) ? "AC_CAMERA_GUIDE" : "CAMERA_GUIDE");
+            }}>{step === "AC_RESULT" ? "← 사진 선택" : "← 다시 촬영"}</button>
+          )}
+          <button type="button" className="flowNav__home" onClick={goHome}>홈으로</button>
+        </nav>
+      )}
     </main>
       {operatorOpen && (
         <section className="overlay">
