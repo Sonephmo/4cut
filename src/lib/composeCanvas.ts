@@ -1,3 +1,4 @@
+import { AC_FRAME } from "../shared/animalCrossingFrame";
 import { asset } from "../design/asset";
 import type { StickerPlacement } from "../shared/types";
 
@@ -130,16 +131,6 @@ const FRAME_DATA: Record<string, FrameConfig> = {
   }
 };
 
-/**
- * 동숲 인쇄 프레임 논리 좌표 (288×432 기준)
- * 실제 캔버스: 288×4=1152, 432×4=1728
- */
-const AC_PRINT = {
-  bg: "#52C482",
-  photo: { x: 10, y: 10, w: 268, h: 321 },
-  logo: { x: 57, y: 324, w: 173.882, h: 97.766 },
-  logoSrc: "animal-crossing/logo.png" as string,
-};
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -433,55 +424,53 @@ export async function composeBioPrint(
   });
 }
 
-/**
- * 동숲 모드: 변환된 한 장을 프레임(배경 #52C482 + 사진 + 로고)에 얹어 인쇄용 PNG 생성.
- * 텍스트 없음. 논리 좌표 288×432, 실제 캔버스 1152×1728.
- */
+/** Compose the shared 4×6 layout at 300 dpi (1200×1800). */
 export async function composeAnimalCrossingPrint(imageUrl: string): Promise<Blob> {
-  const AC_S = 4; // 288×4=1152, 432×4=1728
-  const cw = 288 * AC_S;
-  const ch = 432 * AC_S;
-
-  const main = await loadImage(imageUrl).catch(() => null);
-  if (!main) throw new Error("AC_IMAGE_LOAD_FAIL");
-
-  const logoImg = await loadImage(asset(AC_PRINT.logoSrc)).catch(() => null);
-
+  const scale = 1200 / AC_FRAME.width;
+  const [main, logo] = await Promise.all([
+    loadImage(imageUrl),
+    loadImage(asset(AC_FRAME.logoSrc)),
+    document.fonts.load('64px "' + AC_FRAME.font + '"', "모여봐요차대의숲").then((fonts) => {
+      if (!fonts.length) throw new Error("AC_LOGO_FONT_LOAD_FAIL");
+    }),
+  ]);
   const canvas = document.createElement("canvas");
-  canvas.width = cw;
-  canvas.height = ch;
+  canvas.width = 1200;
+  canvas.height = 1800;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("CANVAS_CONTEXT_FAIL");
+  ctx.scale(scale, scale);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
+  ctx.fillStyle = AC_FRAME.background;
+  ctx.fillRect(0, 0, AC_FRAME.width, AC_FRAME.height);
+  const p = AC_FRAME.photo;
+  drawImageCover(ctx, main, p.x, p.y, p.w, p.h);
+  const l = AC_FRAME.logo;
+  ctx.drawImage(logo, l.x, l.y, l.w, l.h);
 
-  // 배경
-  ctx.fillStyle = AC_PRINT.bg;
-  ctx.fillRect(0, 0, cw, ch);
-
-  // 결과 이미지 (268×321 논리 → ×4)
-  const p = AC_PRINT.photo;
-  drawImageCover(ctx, main,
-    Math.round(p.x * AC_S), Math.round(p.y * AC_S),
-    Math.round(p.w * AC_S), Math.round(p.h * AC_S)
-  );
-
-  // 로고 (173.882×97.766 논리 → ×4)
-  if (logoImg) {
-    const l = AC_PRINT.logo;
-    ctx.drawImage(logoImg,
-      Math.round(l.x * AC_S), Math.round(l.y * AC_S),
-      Math.round(l.w * AC_S), Math.round(l.h * AC_S)
-    );
+  // Render lettering at print resolution instead of enlarging a small raster logo.
+  ctx.fillStyle = AC_FRAME.textColor;
+  ctx.textBaseline = "middle";
+  ctx.shadowColor = "rgba(0, 0, 0, 0.25)";
+  ctx.shadowOffsetY = 4 * scale;
+  ctx.shadowBlur = 4 * scale;
+  for (const label of AC_FRAME.labels) {
+    ctx.font = label.size + 'px "' + AC_FRAME.font + '"';
+    const chars = Array.from(label.text);
+    const spacing = label.size * label.spacing;
+    // Center visible lettering without a trailing letter-spacing advance.
+    const width = chars.reduce((sum, char) => sum + ctx.measureText(char).width, 0) + spacing * (chars.length - 1);
+    let x = label.x + (label.w - width) / 2;
+    for (const char of chars) {
+      ctx.fillText(char, x, label.y + label.h / 2);
+      x += ctx.measureText(char).width + spacing;
+    }
   }
-
   return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) { reject(new Error("BLOB_FAIL")); return; }
-        resolve(blob);
-      },
-      "image/png"
-    );
+    canvas.toBlob((blob) => {
+      if (!blob) { reject(new Error("BLOB_FAIL")); return; }
+      resolve(blob);
+    }, "image/png");
   });
 }

@@ -1,3 +1,4 @@
+import { AC_FRAME } from "./shared/animalCrossingFrame";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { asset } from "./design/asset";
 import { FramePreview } from "./FramePreview";
@@ -248,7 +249,13 @@ export function App() {
       throw new Error("CANVAS_CONTEXT_FAIL");
     }
 
+    // 전면 카메라 스트림은 하드웨어 수준에서 미러링되어 들어옴.
+    // canvas에만 좌우반전을 적용해 저장·인쇄 결과를 정방향으로 맞춤.
+    // 라이브 미리보기 CSS는 건드리지 않아 셀카 느낌은 유지.
+    context.translate(canvas.width, 0);
+    context.scale(-1, 1);
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
     const blob = await new Promise<Blob>((resolve, reject) => {
       canvas.toBlob(
         (value) => {
@@ -981,6 +988,7 @@ export function App() {
 
   const isBasic = frameId.startsWith("basic");
   const isBio = frameId.startsWith("bh_bio");
+
   return (
     <div className="app-viewport">
     <div className="app-scale">
@@ -1074,7 +1082,7 @@ export function App() {
             <div className="mainCardBio__comingSoon">COMING SOON</div>
           </button>
 
-          <span className="mainVersion">버전 0.96a</span>
+          <span className="mainVersion">버전 0.97a</span>
         </>
       )}
 
@@ -1542,9 +1550,18 @@ export function App() {
 
       {step === "AC_RESULT" && transformedImageUrl && (
         <>
-          <div className="acResultCard">
-            <img src={transformedImageUrl} alt="변환 결과" className="acResultImage" />
-            <img src={asset("animal-crossing/logo.png")} alt="" className="acResultLogo" />
+          <div className="acResultCard" style={{ width: AC_FRAME.width, height: AC_FRAME.height, background: AC_FRAME.background }}>
+            <img src={transformedImageUrl} alt="변환 결과" className="acResultImage"
+              style={{ left: AC_FRAME.photo.x, top: AC_FRAME.photo.y, width: AC_FRAME.photo.w, height: AC_FRAME.photo.h }} />
+            <img src={asset(AC_FRAME.logoSrc)} alt="" className="acResultLogo"
+              style={{ left: AC_FRAME.logo.x, top: AC_FRAME.logo.y, width: AC_FRAME.logo.w, height: AC_FRAME.logo.h }} />
+            {AC_FRAME.labels.map((label) => (
+              <span key={label.text} className="acResultLogoText" style={{
+                left: label.x, top: label.y, width: label.w, height: label.h,
+                fontFamily: AC_FRAME.font, fontSize: label.size, lineHeight: label.size + "px",
+                letterSpacing: label.spacing + "em", paddingLeft: label.size * label.spacing, color: AC_FRAME.textColor,
+              }}>{label.text}</span>
+            ))}
           </div>
           <div className="acResultActions">
             <button type="button" className="acResultPrint" onClick={() => void startAcPrintJob()}>인쇄</button>
