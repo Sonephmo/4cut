@@ -1,8 +1,10 @@
+import { ChiikawaFrame } from "./ChiikawaFrame";
+import { CHIIKAWA_FRAME_ID, CHIIKAWA_FRAME } from "./shared/chiikawaFrame";
 import { AC_FRAME } from "./shared/animalCrossingFrame";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { asset } from "./design/asset";
 import { FramePreview } from "./FramePreview";
-import { composeAnimalCrossingPrint, composeBioPrint, composeFinalImageBlob } from "./lib/composeCanvas";
+import { composeChiikawaPrint, composeAnimalCrossingPrint, composeBioPrint, composeFinalImageBlob } from "./lib/composeCanvas";
 import { transformAnimalCrossingImage } from "./lib/acImageTransform";
 import { getSupabase, getSavedSupabaseConfig, saveSupabaseConfig } from "./lib/supabaseClient";
 import type { AppStep, JobSnapshot, Session, Shot, StickerPlacement } from "./shared/types";
@@ -19,8 +21,8 @@ const FRAME_ID_AC = "ac_동숲";
 const SHOT_TOTAL_BIO = 6;
 const SELECT_TOTAL_BIO = 4;
 
-function isAnimalCrossingFrame(fid: string): boolean {
-  return fid.startsWith("ac_");
+function isAiFrame(fid: string): boolean {
+  return fid.startsWith("ac_") || fid === CHIIKAWA_FRAME_ID;
 }
 
 const COUNTDOWN_SECONDS = 5;
@@ -306,7 +308,7 @@ export function App() {
 
   const toggleShot = (index: number) => {
     setShots((prev) => {
-      const selectCap = isAnimalCrossingFrame(frameId) ? SELECT_TOTAL_AC : frameId.startsWith("bh_bio") ? SELECT_TOTAL_BIO : SELECT_TOTAL_DEFAULT;
+      const selectCap = isAiFrame(frameId) ? SELECT_TOTAL_AC : frameId.startsWith("bh_bio") ? SELECT_TOTAL_BIO : SELECT_TOTAL_DEFAULT;
       const next = prev.map((s) => ({ ...s }));
       const target = next[index];
       if (!target || !target.captured) {
@@ -365,7 +367,7 @@ export function App() {
         createdAt: new Date().toISOString()
       });
     }
-    if (isAnimalCrossingFrame(fid)) {
+    if (isAiFrame(fid)) {
       setShots(createShots(SHOT_TOTAL_AC));
     } else if (fid.startsWith("bh_bio")) {
       setShots(createShots(SHOT_TOTAL_BIO));
@@ -381,7 +383,7 @@ export function App() {
       return;
     }
     revokeShotUrls(shotsRef.current);
-    setShots(createShots(isAnimalCrossingFrame(frameId) ? SHOT_TOTAL_AC : SHOT_TOTAL_DEFAULT));
+    setShots(createShots(isAiFrame(frameId) ? SHOT_TOTAL_AC : SHOT_TOTAL_DEFAULT));
     setLastCapturedUrl(null);
     setShowFlash(false);
     setCommittedStickers([]);
@@ -390,7 +392,7 @@ export function App() {
     if (transformedImageUrl?.startsWith("blob:")) URL.revokeObjectURL(transformedImageUrl);
     setTransformedImageUrl(null);
     acPrintReadyRef.current = null;
-    setStep(isAnimalCrossingFrame(frameId) ? "AC_SHOOTING" : "SHOOTING");
+    setStep(isAiFrame(frameId) ? "AC_SHOOTING" : "SHOOTING");
     setCurrentShot(1);
     setCountdown(COUNTDOWN_SECONDS);
     setGap(GAP_SECONDS);
@@ -536,10 +538,10 @@ export function App() {
     }
     setAcTransformError(null);
     setStep("AC_TRANSFORMING");
-    setLoadingText("동물의 숲 스타일로 변환 중…");
+    setLoadingText(frameId === CHIIKAWA_FRAME_ID ? "치이카와 스타일로 변환 중…" : "동물의 숲 스타일로 변환 중…");
     setJob({ uuid: session.uuid, status: "COMPOSING", progress: 5 });
     try {
-      const outUrl = await transformAnimalCrossingImage(shot.previewUrl);
+      const outUrl = await transformAnimalCrossingImage(shot.previewUrl, frameId === CHIIKAWA_FRAME_ID ? "chiikawa" : "ac");
       /** blob: URL 중복 선택 시 새 탭 문제 방지: 이전 동숲 결과만 해제 */
       if (transformedImageUrl?.startsWith("blob:")) {
         URL.revokeObjectURL(transformedImageUrl);
@@ -552,7 +554,7 @@ export function App() {
       if (supabase && session) {
         const sid = session.uuid;
         acPrintReadyRef.current = (async () => {
-          const blob = await composeAnimalCrossingPrint(outUrl);
+          const blob = await (frameId === CHIIKAWA_FRAME_ID ? composeChiikawaPrint : composeAnimalCrossingPrint)(outUrl);
           const filePath = `${sid}-${crypto.randomUUID()}.png`;
           const { error } = await supabase.storage.from("photos").upload(filePath, blob, {
             contentType: "image/png",
@@ -598,7 +600,7 @@ export function App() {
       const filePath = acPrintReadyRef.current
         ? await acPrintReadyRef.current
         : await (async () => {
-            const blob = await composeAnimalCrossingPrint(transformedImageUrl);
+            const blob = await (frameId === CHIIKAWA_FRAME_ID ? composeChiikawaPrint : composeAnimalCrossingPrint)(transformedImageUrl);
             const fp = `${session.uuid}-${crypto.randomUUID()}.png`;
             const { error } = await supabase.storage.from("photos").upload(fp, blob, {
               contentType: "image/png",
@@ -835,8 +837,8 @@ export function App() {
       return;
     }
 
-    const shotCap = isAnimalCrossingFrame(frameId) ? SHOT_TOTAL_AC : frameId.startsWith("bh_bio") ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT;
-    const selectStep: AppStep = isAnimalCrossingFrame(frameId) ? "AC_SELECT" : "SELECT";
+    const shotCap = isAiFrame(frameId) ? SHOT_TOTAL_AC : frameId.startsWith("bh_bio") ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT;
+    const selectStep: AppStep = isAiFrame(frameId) ? "AC_SELECT" : "SELECT";
 
     if (shootingPhase === "countdown") {
       if (countdown > 0) {
@@ -1011,13 +1013,14 @@ export function App() {
     return () => window.clearInterval(timer);
   }, [jobActive, session, printJobFilePath]);
 
+  const isChiikawa = frameId === CHIIKAWA_FRAME_ID;
   const isBasic = frameId.startsWith("basic");
   const isBio = frameId.startsWith("bh_bio");
 
   return (
     <div className="app-viewport">
     <div className="app-scale">
-    <main className={`screen ${step === "MAIN" ? "screen--main" : ""} ${step === "FRAME_CONFIRM" ? (isBio ? "screen--frameConfirm screen--frameConfirm-bio" : isBasic ? "screen--frameConfirm screen--frameConfirm-basic" : "screen--frameConfirm screen--frameConfirm-designed") : ""} ${step === "QUANTITY" ? (isAnimalCrossingFrame(frameId) ? "screen--quantity" : isBio ? "screen--quantity screen--quantity-bio" : isBasic ? "screen--quantity screen--quantity-basic" : "screen--quantity screen--quantity-designed") : ""} ${step === "CAMERA_GUIDE" || step === "AC_CAMERA_GUIDE" ? "screen--cameraGuide" : ""} ${step === "SHOOTING" || step === "AC_SHOOTING" ? "screen--shooting" : ""} ${step === "LOADING" || step === "AC_TRANSFORMING" ? "screen--loading" : ""} ${step === "SELECT" || step === "AC_SELECT" ? "screen--select" : ""} ${step === "DESIGN" ? "screen--design" : ""} ${step === "PRINTING" ? "screen--printing" : ""} ${step === "END" ? "screen--end" : ""} ${step === "AC_RESULT" ? "screen--acResult" : ""} ${isAnimalCrossingFrame(frameId) && step !== "MAIN" ? "screen--acTheme" : ""} ${isBio && step !== "MAIN" ? "screen--bioTheme" : ""}`}>
+    <main className={`screen ${step === "MAIN" ? "screen--main" : ""} ${step === "FRAME_CONFIRM" ? (isBio ? "screen--frameConfirm screen--frameConfirm-bio" : isBasic ? "screen--frameConfirm screen--frameConfirm-basic" : "screen--frameConfirm screen--frameConfirm-designed") : ""} ${step === "QUANTITY" ? (isAiFrame(frameId) ? "screen--quantity" : isBio ? "screen--quantity screen--quantity-bio" : isBasic ? "screen--quantity screen--quantity-basic" : "screen--quantity screen--quantity-designed") : ""} ${step === "CAMERA_GUIDE" || step === "AC_CAMERA_GUIDE" ? "screen--cameraGuide" : ""} ${step === "SHOOTING" || step === "AC_SHOOTING" ? "screen--shooting" : ""} ${step === "LOADING" || step === "AC_TRANSFORMING" ? "screen--loading" : ""} ${step === "SELECT" || step === "AC_SELECT" ? "screen--select" : ""} ${step === "DESIGN" ? "screen--design" : ""} ${step === "PRINTING" ? "screen--printing" : ""} ${step === "END" ? "screen--end" : ""} ${step === "AC_RESULT" ? "screen--acResult" : ""} ${isAiFrame(frameId) && step !== "MAIN" ? "screen--acTheme" : ""} ${isBio && step !== "MAIN" ? "screen--bioTheme" : ""} ${isChiikawa && step !== "MAIN" ? "screen--chiikawaTheme" : ""}`}>
       {step === "MAIN" && (
         <>
           {/* 설정 버튼 (우상단) */}
@@ -1095,19 +1098,18 @@ export function App() {
             <img className="mainAnimalImg mainAnimalImg--134" src={asset("main/image-134.png")} alt="" />
           </button>
 
-          {/* BH Bio Frame 카드 (Frame 12, 우측 하단, 회색 — Coming Soon 비활성) */}
-          <button
-            type="button"
-            className="mainCard mainCardBio"
-            disabled
-          >
-            <div className="mainCard__bg" />
-            <div className="mainCardBio__title">BH BIO FRAME</div>
-            <img className="mainCardBio__char" src={asset("main/image-165.png")} alt="" />
-            <div className="mainCardBio__comingSoon">COMING SOON</div>
+          <button type="button" className="mainCard mainCardChiikawa" aria-label="차의카와 프레임"
+            onClick={() => { setFrameId(CHIIKAWA_FRAME_ID); void startSession(CHIIKAWA_FRAME_ID); }}>
+            <img className="mainChiikawaLogo" src={asset("chiikawa/logo.png")} alt="차의카와" />
+            <span className="mainChiikawaSample mainChiikawaSample--1"><img src={asset("chiikawa/sample-1.png")} alt="치이카와 변환 예시 1" /></span>
+            <span className="mainChiikawaSample mainChiikawaSample--2"><img src={asset("chiikawa/sample-2.png")} alt="치이카와 변환 예시 2" /></span>
           </button>
+          <div className="mainComingSoon">
+            <span>COMMING<br />SOON</span>
+            <img src={asset("chiikawa/coming-soon.png")} alt="" />
+          </div>
 
-          <span className="mainVersion">버전 0.97a</span>
+          <span className="mainVersion">버전 0.98a</span>
         </>
       )}
 
@@ -1232,32 +1234,32 @@ export function App() {
           <button type="button" className="btnQuantitySymbol btnQuantityMinus" onClick={() => setCopies((v) => Math.max(1, v - 1))} aria-label="감소">−</button>
           <button type="button" className="btnQuantitySymbol btnQuantityPlus" onClick={() => setCopies((v) => Math.min(4, v + 1))} aria-label="증가">+</button>
           <button type="button" className={isBio ? "btnQuantityPrev btnBioQuantityPrev" : "btnQuantityPrev"} onClick={() => {
-            if (isAnimalCrossingFrame(frameId)) setStep("MAIN");
+            if (isAiFrame(frameId)) setStep("MAIN");
             else if (isBasic) setStep("FRAME_CONFIRM");
             else setStep("FRAME_CONFIRM");
           }}>이전</button>
-          <button type="button" className={isBio ? "btnQuantityNext btnBioQuantityNext" : "btnQuantityNext"} onClick={() => void setStep(isAnimalCrossingFrame(frameId) ? "AC_CAMERA_GUIDE" : "CAMERA_GUIDE")}>다음</button>
+          <button type="button" className={isBio ? "btnQuantityNext btnBioQuantityNext" : "btnQuantityNext"} onClick={() => void setStep(isAiFrame(frameId) ? "AC_CAMERA_GUIDE" : "CAMERA_GUIDE")}>다음</button>
         </>
       )}
 
       {(step === "CAMERA_GUIDE" || step === "AC_CAMERA_GUIDE") && (
         <>
-          {isBio
+          {isChiikawa ? null : isBio
             ? <img src={asset("bh_bio_frame/image 153.png")} alt="" className="cameraGuide__illus cameraGuide__illus--bio" />
             : <img src={asset("Group 8.png")} alt="" className="cameraGuide__illus" />
           }
           <p className="cameraGuide__text1">잠시 후 촬영이 시작됩니다<br />마음에 드는 포즈를 미리 생각해 두세요!</p>
-          <p className="cameraGuide__text2">촬영은 총 {isAnimalCrossingFrame(frameId) ? SHOT_TOTAL_AC : isBio ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT}번 진행됩니다</p>
+          <p className="cameraGuide__text2">촬영은 총 {isAiFrame(frameId) ? SHOT_TOTAL_AC : isBio ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT}번 진행됩니다</p>
           {cameraError && <p className="errorText">{cameraError}</p>}
           <button type="button" className={isBio ? "btnQuantityPrev btnBioCameraGuidePrev" : "btnQuantityPrev"} onClick={() => setStep("QUANTITY")}>이전</button>
-          <button type="button" className={isBio ? "btnCameraStart btnBioCameraStart" : "btnCameraStart"} onClick={startShooting}>촬영 시작</button>
+          <button type="button" className={isBio ? "btnCameraStart btnBioCameraStart" : "btnCameraStart"} onClick={startShooting}>{isChiikawa ? "다음" : "촬영 시작"}</button>
         </>
       )}
 
 
       {(step === "SHOOTING" || step === "AC_SHOOTING") && (
         <>
-          <h1 className="shootingTitle">남은횟수 {Math.min(currentShot, isAnimalCrossingFrame(frameId) ? SHOT_TOTAL_AC : frameId.startsWith("bh_bio") ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT)}/{isAnimalCrossingFrame(frameId) ? SHOT_TOTAL_AC : frameId.startsWith("bh_bio") ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT}</h1>
+          <h1 className="shootingTitle">남은횟수 {Math.min(currentShot, isAiFrame(frameId) ? SHOT_TOTAL_AC : frameId.startsWith("bh_bio") ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT)}/{isAiFrame(frameId) ? SHOT_TOTAL_AC : frameId.startsWith("bh_bio") ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT}</h1>
           <div className="cameraBox">
             {/* 갭 중: 찍힌 사진 표시 / 그 외: 라이브 영상 */}
             <video
@@ -1286,6 +1288,7 @@ export function App() {
       {(step === "SELECT" || step === "AC_SELECT") && (
         <>
           {!isBio && <h1 className="selectTitle">Select</h1>}
+          {isChiikawa && <p className="chiikawaSelectHint">마음에 드는 사진을 한 장 골라주세요</p>}
 
           {/* BIO SELECT: 프리뷰 + 6장 그리드 */}
           {isBio ? (
@@ -1339,10 +1342,10 @@ export function App() {
           ) : step !== "AC_SELECT" ? (
             <div className="selectFramePreviewWrap">
               <FramePreview
-                frameId={isBasic ? frameId : isAnimalCrossingFrame(frameId) ? FRAME_ID_AC : "designed_default"}
+                frameId={isBasic ? frameId : isAiFrame(frameId) ? FRAME_ID_AC : "designed_default"}
                 selectedShots={selectedShots}
-                hideIcons={isBasic || isAnimalCrossingFrame(frameId)}
-                animalCrossingSinglePhoto={isAnimalCrossingFrame(frameId)}
+                hideIcons={isBasic || isAiFrame(frameId)}
+                animalCrossingSinglePhoto={isAiFrame(frameId)}
               />
             </div>
           ) : (
@@ -1378,8 +1381,9 @@ export function App() {
                 ))}
               </div>
               <div className="selectActions">
+                {isChiikawa && <button type="button" className="chiikawaSelectPrev" onClick={() => setStep("AC_CAMERA_GUIDE")}>이전</button>}
                 <p className="selectHint">
-                  {isAnimalCrossingFrame(frameId)
+                  {isAiFrame(frameId)
                     ? `사진을 1장 선택해주세요 (${selectedCount}/1)`
                     : `사진을 4장 선택해주세요 (${selectedCount}/4)`}
                 </p>
@@ -1387,9 +1391,9 @@ export function App() {
                 <button
                   type="button"
                   className="btnPrint"
-                  disabled={selectedCount !== (isAnimalCrossingFrame(frameId) ? SELECT_TOTAL_AC : SELECT_TOTAL_DEFAULT)}
-                  onClick={() => (isAnimalCrossingFrame(frameId) ? void runAcTransform() : isBasic ? void startJob() : setStep("DESIGN"))}
-                >{isAnimalCrossingFrame(frameId) ? "변환하기" : isBasic ? "인쇄 진행" : "다음"}</button>
+                  disabled={selectedCount !== (isAiFrame(frameId) ? SELECT_TOTAL_AC : SELECT_TOTAL_DEFAULT)}
+                  onClick={() => (isAiFrame(frameId) ? void runAcTransform() : isBasic ? void startJob() : setStep("DESIGN"))}
+                >{isChiikawa ? "다음" : isAiFrame(frameId) ? "변환하기" : isBasic ? "인쇄 진행" : "다음"}</button>
               </div>
             </>
           )}
@@ -1565,9 +1569,10 @@ export function App() {
       )}
 
       {(step === "LOADING" || step === "AC_TRANSFORMING") && (
-        <div style={{ position: "absolute", inset: 0, background: isAnimalCrossingFrame(frameId) ? "#52C482" : "#f3f3f6", borderRadius: "30px" }}>
+        <div style={{ position: "absolute", inset: 0, background: isChiikawa ? CHIIKAWA_FRAME.background : isAiFrame(frameId) ? "#52C482" : "#f3f3f6", borderRadius: "30px" }}>
           <h1 className="loadingTitle">Loading...</h1>
-          {!isAnimalCrossingFrame(frameId) && <p className="loadingSub">차의대의 새로운 마스코트!<br />병헌이와 비오!</p>}
+          {isChiikawa && <p className="loadingSub">차의대 마스코트 이름은 비오와 병헌이 입니다</p>}
+          {!isAiFrame(frameId) && <p className="loadingSub">차의대의 새로운 마스코트!<br />병헌이와 비오!</p>}
           <p className="loadingSub2">{loadingText}</p>
           <p className="loadingProgress">진행률: {job?.progress ?? 0}%</p>
         </div>
@@ -1575,7 +1580,7 @@ export function App() {
 
       {step === "AC_RESULT" && transformedImageUrl && (
         <>
-          <div className="acResultCard" style={{ width: AC_FRAME.width, height: AC_FRAME.height, background: AC_FRAME.background }}>
+          {isChiikawa ? <ChiikawaFrame imageUrl={transformedImageUrl} /> : <div className="acResultCard" style={{ width: AC_FRAME.width, height: AC_FRAME.height, background: AC_FRAME.background }}>
             <img src={transformedImageUrl} alt="변환 결과" className="acResultImage"
               style={{ left: AC_FRAME.photo.x, top: AC_FRAME.photo.y, width: AC_FRAME.photo.w, height: AC_FRAME.photo.h }} />
             <img src={asset(AC_FRAME.logoSrc)} alt="" className="acResultLogo"
@@ -1588,6 +1593,7 @@ export function App() {
               }}>{label.text}</span>
             ))}
           </div>
+          }
           <div className="acResultActions">
             <button type="button" className="acResultPrint" onClick={() => void startAcPrintJob()}>인쇄</button>
           </div>
@@ -1625,7 +1631,7 @@ export function App() {
           {(step === "SELECT" || step === "AC_SELECT" || step === "AC_RESULT") && (
             <button type="button" className="flowNav__back" onClick={() => {
               setAcTransformError(null);
-              setStep(step === "AC_RESULT" ? "AC_SELECT" : isAnimalCrossingFrame(frameId) ? "AC_CAMERA_GUIDE" : "CAMERA_GUIDE");
+              setStep(step === "AC_RESULT" ? "AC_SELECT" : isAiFrame(frameId) ? "AC_CAMERA_GUIDE" : "CAMERA_GUIDE");
             }}>{step === "AC_RESULT" ? "← 사진 선택" : "← 다시 촬영"}</button>
           )}
           <button type="button" className="flowNav__home" onClick={goHome}>홈으로</button>
@@ -1891,6 +1897,14 @@ export function App() {
                 </button>
                 {changelogOpen && (
                   <div style={{ marginTop: "8px", fontSize: "13px", lineHeight: "1.7", color: "#333", background: "#fafafa", border: "1px solid #ddd", borderRadius: "6px", padding: "12px", maxHeight: "320px", overflowY: "auto" }}>
+                    <strong>v0.98a</strong>
+                    <ul style={{ margin: "4px 0 12px 16px", padding: 0 }}>
+                      <li>차의카와 프레임 추가: 3회 촬영 → 1장 선택 → AI 변환 → 인쇄</li>
+                      <li>먼작귀(치이카와) 스타일 전용 AI 변환 프롬프트 적용</li>
+                      <li>분홍색 안내 화면과 차의카와·해솔네컷 로고 적용</li>
+                      <li>결과 미리보기 및 1200×1800 인쇄 프레임 추가</li>
+                      <li>메인화면에 차의카와 선택 카드와 변환 예시 이미지 추가</li>
+                    </ul>
                     <strong>v0.95a</strong>
                     <ul style={{ margin: "4px 0 12px 16px", padding: 0 }}>
                       <li>메인화면 2열 그리드 레이아웃 적용</li>

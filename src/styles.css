@@ -1872,3 +1872,54 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   outline: 4px solid var(--color-navy);
   outline-offset: 5px;
 }
+/* Chiikawa — Figma E flow; the shared AI flow retains three captures. */
+.mainPreview { left: 22px; top: 242px; }
+.mainCardBasic { left: 601px; top: 233px; }
+.mainCardDesigned { left: 601px; top: 588px; }
+.mainCardAnimal { left: 22px; top: 959px; }
+.mainCardChiikawa { left: 601px; top: 959px; width: 427px; height: 375px; border-radius: 30px; background: #fac6c3; box-shadow: 0 4px 4px #0004; }
+.mainChiikawaLogo { position: absolute; left: 105px; top: 42px; width: 222px; height: 44.5px; object-fit: contain; }
+.mainChiikawaSample { position: absolute; top: 146px; width: 150px; height: 186px; overflow: hidden; border-radius: 20px; box-shadow: 0 4px 4px #0004; }
+.mainChiikawaSample--1 { left: 45px; }
+.mainChiikawaSample--2 { left: 233px; }
+.mainChiikawaSample img { position: absolute; width: 100%; max-width: none; }
+.mainChiikawaSample--1 img { left: 0; top: -26.22%; height: 143.23%; }
+.mainChiikawaSample--2 img { left: 0; top: -37.12%; height: 174.16%; }
+.mainComingSoon { position: absolute; left: 22px; top: 1363px; width: 1006px; height: 317px; border-radius: 30px; background: #b2b2b2; overflow: hidden; box-shadow: 0 4px 4px #0004; }
+.mainComingSoon span { position: absolute; top: 126px; left: 299px; width: 408px; text-align: center; color: white; font-size: 32px; text-shadow: 0 4px 4px #0004; }
+.mainComingSoon img { position: absolute; left: 832px; top: 188px; width: 116px; height: 157px; object-fit: cover; }
+.screen--chiikawaTheme.screen--quantity,
+.screen--chiikawaTheme.screen--cameraGuide { background: #fac6c3; }
+.screen--chiikawaTheme.screen--quantity .quantityTitle { top: 632px; height: 84px; display: flex; align-items: center; justify-content: center; text-shadow: 0 4px 4px #0004; }
+.screen--chiikawaTheme .quantityCount { left: 525px; top: 861px; height: 114px; line-height: 114px; text-shadow: 0 4px 4px #0004; }
+.screen--chiikawaTheme .btnQuantitySymbol { color: white; font-family: "Cafe24 Ssurround OTF", sans-serif; text-shadow: 0 4px 4px #0004; }
+.screen--chiikawaTheme .btnQuantityMinus { left: 187px; top: 784px; }
+.screen--chiikawaTheme .btnQuantityPlus { left: 709px; top: 770px; }
+.screen--chiikawaTheme .btnQuantityPrev,
+.screen--chiikawaTheme .btnQuantityNext,
+.screen--chiikawaTheme .btnCameraStart { width: 284px; height: 102px; }
+.screen--chiikawaTheme.screen--quantity .btnQuantityPrev { left: 161px; top: 1154px; }
+.screen--chiikawaTheme.screen--quantity .btnQuantityNext { left: 634px; top: 1154px; }
+.screen--chiikawaTheme .cameraGuide__text1 { left: 99px; top: 699px; width: 881px; line-height: 1; }
+.screen--chiikawaTheme .cameraGuide__text2 { left: 132px; top: 919px; width: 815px; }
+.screen--chiikawaTheme.screen--cameraGuide .btnQuantityPrev { left: 161px; top: 1723px; }
+.screen--chiikawaTheme.screen--cameraGuide .btnCameraStart { left: 634px; top: 1723px; }
+.screen--chiikawaTheme.screen--shooting { background: #f3f3f6; }
+.screen--chiikawaTheme .shootingTitle { color: black; }
+.screen--chiikawaTheme .cameraBox { border-radius: 0; }
+.screen--chiikawaTheme.screen--select .selectTitle { top: 40px; line-height: 1.5; }
+.chiikawaSelectHint { position: absolute; left: 0; top: 229px; width: 1080px; margin: 0; font-size: 48px; text-align: center; text-shadow: 0 4px 4px #0004; }
+.screen--chiikawaTheme .selectAcPlaceholder { left: 210px; top: 362px; width: 659px; height: 711px; border-radius: 0; }
+.screen--chiikawaTheme .selectShotsGrid { left: 210px; top: 1112px; grid-template-columns: repeat(3, 203px); grid-template-rows: 219px; gap: 25px; }
+.screen--chiikawaTheme .shotCard { width: 203px; height: 219px; border-radius: 0; }
+.screen--chiikawaTheme .selectActions { left: 147px; top: 1692px; width: 757px; }
+.screen--chiikawaTheme .selectActions .selectHint { font-size: 24px; }
+.screen--chiikawaTheme .selectActions .btnPrint { width: 284px; }
+.screen--chiikawaTheme.screen--loading .loadingTitle { left: 0; top: 690px; width: 1080px; font-size: 128px; line-height: 1.2; }
+.screen--chiikawaTheme.screen--loading .loadingSub { left: 38px; top: 911px; width: 1004px; }
+.screen--chiikawaTheme.screen--acResult .acResultCard { position: absolute; left: 62px; top: 59px; }
+.screen--chiikawaTheme.screen--acResult .acResultActions { position: absolute; left: 655px; top: 1750px; }
+.screen--chiikawaTheme.screen--acResult .acResultPrint { width: 284px; height: 102px; }
+.mainPreview { height: 681px; }
+.screen--chiikawaTheme .selectActions .selectHint { position: absolute; top: -65px; width: 100%; text-align: center; }
+.chiikawaSelectPrev { width: 284px; height: 102px; border: 7px solid #244a6d; border-radius: 105px; background: #ffffff5e; font-family: inherit; font-size: 48px; color: #244a6d; cursor: pointer; }

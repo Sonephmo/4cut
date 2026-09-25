@@ -1,6 +1,33 @@
-import { AC_FRAME } from "../shared/animalCrossingFrame";
 import { asset } from "../design/asset";
 import type { StickerPlacement } from "../shared/types";
+import { AC_FRAME } from "../shared/animalCrossingFrame";
+import { CHIIKAWA_FRAME } from "../shared/chiikawaFrame";
+
+export async function composeChiikawaPrint(imageUrl: string): Promise<Blob> {
+  const frame = CHIIKAWA_FRAME;
+  const [photo, ...decorations] = await Promise.all([
+    loadImage(imageUrl),
+    ...frame.decorations.map((item) => loadImage(asset(item.src))),
+  ]);
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 1800;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("CANVAS_CONTEXT_FAIL");
+  ctx.scale(1200 / frame.width, 1800 / frame.height);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.fillStyle = frame.background;
+  ctx.fillRect(0, 0, frame.width, frame.height);
+  const p = frame.photo;
+  drawImageCover(ctx, photo, p.x, p.y, p.w, p.h);
+  frame.decorations.forEach((item, i) => ctx.drawImage(decorations[i], item.x, item.y, item.w, item.h));
+  return new Promise((resolve, reject) => canvas.toBlob(
+    (blob) => blob ? resolve(blob) : reject(new Error("BLOB_FAIL")), "image/png",
+  ));
+}
+
+
 
 /**
  * 인쇄 canvas: 4×6 인치(10.16cm×15.24cm) 용지.
