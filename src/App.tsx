@@ -1,4 +1,5 @@
 import { ChiikawaFrame } from "./ChiikawaFrame";
+import { ChiikawaStyleSelect } from "./ChiikawaStyleSelect";
 import { CHIIKAWA_FRAME_ID, CHIIKAWA_FRAME } from "./shared/chiikawaFrame";
 import { AC_FRAME } from "./shared/animalCrossingFrame";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -6,8 +7,9 @@ import { asset } from "./design/asset";
 import { FramePreview } from "./FramePreview";
 import { composeChiikawaPrint, composeAnimalCrossingPrint, composeBioPrint, composeFinalImageBlob } from "./lib/composeCanvas";
 import { transformAnimalCrossingImage } from "./lib/acImageTransform";
+import { startAudioCountdown } from "./lib/audioCountdown";
 import { getSupabase, getSavedSupabaseConfig, saveSupabaseConfig } from "./lib/supabaseClient";
-import type { AppStep, JobSnapshot, Session, Shot, StickerPlacement } from "./shared/types";
+import type { AppStep, ChiikawaStyle, JobSnapshot, Session, Shot, StickerPlacement } from "./shared/types";
 
 const SHOT_TOTAL = 6;
 const SELECT_TOTAL = 4;
@@ -114,6 +116,7 @@ function revokeShotUrls(shots: Shot[]) {
 export function App() {
   const [step, setStep] = useState<AppStep>("MAIN");
   const [frameId, setFrameId] = useState("basic_001");
+  const [chiikawaStyle, setChiikawaStyle] = useState<ChiikawaStyle>("human");
   const [copies, setCopies] = useState(1);
   const [designColor, setDesignColor] = useState("");
   /** 확정된(V 누른) 스티커 목록 */
@@ -541,7 +544,7 @@ export function App() {
     setLoadingText(frameId === CHIIKAWA_FRAME_ID ? "치이카와 스타일로 변환 중…" : "동물의 숲 스타일로 변환 중…");
     setJob({ uuid: session.uuid, status: "COMPOSING", progress: 5 });
     try {
-      const outUrl = await transformAnimalCrossingImage(shot.previewUrl, frameId === CHIIKAWA_FRAME_ID ? "chiikawa" : "ac");
+      const outUrl = await transformAnimalCrossingImage(shot.previewUrl, frameId === CHIIKAWA_FRAME_ID ? "chiikawa" : "ac", chiikawaStyle);
       /** blob: URL 중복 선택 시 새 탭 문제 방지: 이전 동숲 결과만 해제 */
       if (transformedImageUrl?.startsWith("blob:")) {
         URL.revokeObjectURL(transformedImageUrl);
@@ -645,6 +648,7 @@ export function App() {
     revokeShotUrls(shots);
     setStep("MAIN");
     setFrameId("basic_001");
+    setChiikawaStyle("human");
     setSession(null);
     setCopies(1);
     setDesignColor("");
@@ -801,6 +805,8 @@ export function App() {
     countdownSoundRef.current = new Audio(asset("sounds/카운트다운.mp3"));
     shutterSoundRef.current   = new Audio(asset("sounds/촬영.mp3"));
     return () => {
+      countdownSoundRef.current?.pause();
+      shutterSoundRef.current?.pause();
       countdownSoundRef.current = null;
       shutterSoundRef.current   = null;
     };
@@ -810,27 +816,38 @@ export function App() {
     if ((step === "SHOOTING" || step === "AC_SHOOTING") && shootingPhase === "countdown") {
       const snd = countdownSoundRef.current;
       if (snd) {
-        snd.src = asset(step === "AC_SHOOTING" ? "sounds/ac-countdown.mp3" : "sounds/카운트다운.mp3");
+        const chiikawa = frameId === CHIIKAWA_FRAME_ID;
+        snd.src = asset(chiikawa ? "sounds/chiikawa-countdown.m4a" : step === "AC_SHOOTING" ? "sounds/ac-countdown.mp3" : "sounds/카운트다운.mp3");
         snd.load();
         snd.currentTime = 0;
-        snd.playbackRate = step === "AC_SHOOTING" ? 1.5 : 1.0;
+        snd.playbackRate = !chiikawa && step === "AC_SHOOTING" ? 1.5 : 1.0;
+        if (chiikawa) {
+          return startAudioCountdown(snd, setCountdown, () => setShootingPhase("capturing"));
+        }
         void snd.play().catch(() => undefined);
       }
     }
-  }, [shootingPhase, step]);
+  }, [shootingPhase, step, frameId]);
+
+  useEffect(() => {
+    if (step !== "SHOOTING" && step !== "AC_SHOOTING") {
+      countdownSoundRef.current?.pause();
+      shutterSoundRef.current?.pause();
+    }
+  }, [step]);
 
   useEffect(() => {
     if (shootingPhase === "capturing") {
       setShowFlash(true);
       const t = window.setTimeout(() => setShowFlash(false), 450);
       const snd = shutterSoundRef.current;
-      if (snd) {
+      if (snd && frameId !== CHIIKAWA_FRAME_ID) {
         snd.currentTime = 0;
         void snd.play().catch(() => undefined);
       }
       return () => window.clearTimeout(t);
     }
-  }, [shootingPhase]);
+  }, [shootingPhase, frameId]);
 
   useEffect(() => {
     if (step !== "SHOOTING" && step !== "AC_SHOOTING") {
@@ -841,6 +858,8 @@ export function App() {
     const selectStep: AppStep = isAiFrame(frameId) ? "AC_SELECT" : "SELECT";
 
     if (shootingPhase === "countdown") {
+      // Chiikawa uses the recording's playback clock, including its shutter at 5s.
+      if (frameId === CHIIKAWA_FRAME_ID) return;
       if (countdown > 0) {
         const timeout = window.setTimeout(() => {
           setCountdown((value) => value - 1);
@@ -1099,10 +1118,14 @@ export function App() {
           </button>
 
           <button type="button" className="mainCard mainCardChiikawa" aria-label="차의카와 프레임"
-            onClick={() => { setFrameId(CHIIKAWA_FRAME_ID); void startSession(CHIIKAWA_FRAME_ID); }}>
+            onClick={() => { setFrameId(CHIIKAWA_FRAME_ID); setChiikawaStyle("human"); setStep("CHIIKAWA_STYLE_SELECT"); }}>
             <img className="mainChiikawaLogo" src={asset("chiikawa/logo.png")} alt="차의카와" />
             <span className="mainChiikawaSample mainChiikawaSample--1"><img src={asset("chiikawa/sample-1.png")} alt="치이카와 변환 예시 1" /></span>
             <span className="mainChiikawaSample mainChiikawaSample--2"><img src={asset("chiikawa/sample-2.png")} alt="치이카와 변환 예시 2" /></span>
+            <span className="mainChiikawaCharacter mainChiikawaCharacter--right"><img src={asset("chiikawa/card-character-right.png")} alt="" /></span>
+            <span className="mainChiikawaSample mainChiikawaSample--3"><img src={asset("chiikawa/sample-3.png")} alt="치이카와 변환 예시 3" /></span>
+            <img className="mainChiikawaCharacter mainChiikawaCharacter--left" src={asset("chiikawa/card-character-left.png")} alt="" />
+            <img className="mainChiikawaBrand" src={asset("chiikawa/brand.png")} alt="해솔네컷" />
           </button>
           <div className="mainComingSoon">
             <span>COMMING<br />SOON</span>
@@ -1111,6 +1134,13 @@ export function App() {
 
           <span className="mainVersion">버전 0.98a</span>
         </>
+      )}
+
+      {step === "CHIIKAWA_STYLE_SELECT" && (
+        <ChiikawaStyleSelect onSelect={(style) => {
+          setChiikawaStyle(style);
+          void startSession(CHIIKAWA_FRAME_ID);
+        }} />
       )}
 
       {step === "FRAME_CONFIRM" && (
@@ -1234,7 +1264,8 @@ export function App() {
           <button type="button" className="btnQuantitySymbol btnQuantityMinus" onClick={() => setCopies((v) => Math.max(1, v - 1))} aria-label="감소">−</button>
           <button type="button" className="btnQuantitySymbol btnQuantityPlus" onClick={() => setCopies((v) => Math.min(4, v + 1))} aria-label="증가">+</button>
           <button type="button" className={isBio ? "btnQuantityPrev btnBioQuantityPrev" : "btnQuantityPrev"} onClick={() => {
-            if (isAiFrame(frameId)) setStep("MAIN");
+            if (isChiikawa) setStep("CHIIKAWA_STYLE_SELECT");
+            else if (isAiFrame(frameId)) setStep("MAIN");
             else if (isBasic) setStep("FRAME_CONFIRM");
             else setStep("FRAME_CONFIRM");
           }}>이전</button>

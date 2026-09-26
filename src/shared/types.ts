@@ -1,5 +1,6 @@
 export type AppStep =
   | "MAIN"
+  | "CHIIKAWA_STYLE_SELECT"
   | "FRAME_CONFIRM"
   | "QUANTITY"
   | "CAMERA_GUIDE"
@@ -15,6 +16,8 @@ export type AppStep =
   | "AC_SELECT"
   | "AC_TRANSFORMING"
   | "AC_RESULT";
+
+export type ChiikawaStyle = "human" | "animal";
 
 /** 287×432 논리 좌표계(프리뷰 좌표)에서의 스티커 배치 정보 */
 export type StickerPlacement = {
