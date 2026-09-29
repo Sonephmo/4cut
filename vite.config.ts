@@ -33,6 +33,8 @@ export default defineConfig({
         ]
       },
       workbox: {
+        // Keep the full-resolution Homecoming print overlays available offline.
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         globPatterns: ["**/*.{js,css,html,svg,png,mp3,m4a}"],
         runtimeCaching: [
           {

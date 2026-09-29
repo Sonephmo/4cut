@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { createHash } = require("crypto");
 
 const root = path.join(__dirname, "..");
 
@@ -143,11 +144,26 @@ if (fs.existsSync(srcHaesol)) {
   }
   // SVG 파일 (해솔 svg 하위 폴더)
   const srcHaesolSvg = path.join(srcHaesol, "해솔 svg");
+  const optimizedHaesol = path.join(root, "design", "optimized-haesol");
+  const manifestPath = path.join(optimizedHaesol, "manifest.json");
+  const optimizedManifest = fs.existsSync(manifestPath)
+    ? new Map(JSON.parse(fs.readFileSync(manifestPath, "utf8")).map(entry => [entry.file, entry]))
+    : new Map();
+  // Git may convert SVG line endings between Windows and the deployment host.
+  const sha256 = file => createHash("sha256")
+    .update(fs.readFileSync(file, "utf8").replace(/\r\n/g, "\n")).digest("hex");
   if (fs.existsSync(srcHaesolSvg)) {
     const svgEntries = fs.readdirSync(srcHaesolSvg, { withFileTypes: true });
     for (const e of svgEntries) {
       if (!e.isFile() || !e.name.endsWith(".svg")) continue;
-      fs.copyFileSync(path.join(srcHaesolSvg, e.name), path.join(destHaesol, e.name));
+      const original = path.join(srcHaesolSvg, e.name);
+      const optimized = path.join(optimizedHaesol, e.name);
+      const entry = optimizedManifest.get(e.name);
+      const valid = entry && fs.existsSync(optimized)
+        && sha256(original) === entry.sourceSha256
+        && sha256(optimized) === entry.optimizedSha256;
+      if (entry && !valid) console.warn(`[copy-assets] stale optimized SVG, using original: ${e.name}`);
+      fs.copyFileSync(valid ? optimized : original, path.join(destHaesol, e.name));
     }
     console.log("[copy-assets] copied 해솔 SVG 스티커 -> public/design-assets/haesol");
   }

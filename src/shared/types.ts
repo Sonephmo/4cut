@@ -1,6 +1,7 @@
 export type AppStep =
   | "MAIN"
   | "CHIIKAWA_STYLE_SELECT"
+  | "HOMECOMING_STYLE_SELECT"
   | "FRAME_CONFIRM"
   | "QUANTITY"
   | "CAMERA_GUIDE"

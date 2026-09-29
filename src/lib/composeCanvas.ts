@@ -2,6 +2,26 @@ import { asset } from "../design/asset";
 import type { StickerPlacement } from "../shared/types";
 import { AC_FRAME } from "../shared/animalCrossingFrame";
 import { CHIIKAWA_FRAME } from "../shared/chiikawaFrame";
+import { getHomecomingFrame } from "../shared/homecomingFrames";
+
+export async function composeHomecomingPrint(imageUrls: string[], frameId: string): Promise<Blob> {
+  if (imageUrls.length !== 4) throw new Error("SHOT_NOT_FOUND");
+  const frame = getHomecomingFrame(frameId);
+  const [overlay, ...photos] = await Promise.all([loadImage(asset(frame.src)), ...imageUrls.map(loadImage)]);
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 1800;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("CANVAS_CONTEXT_FAIL");
+  ctx.scale(canvas.width / frame.width, canvas.height / frame.height);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, frame.width, frame.height);
+  frame.slots.forEach((slot, i) => drawImageCover(ctx, photos[i], slot.x, slot.y, slot.w, slot.h));
+  ctx.drawImage(overlay, 0, 0, frame.width, frame.height);
+  return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("BLOB_FAIL")), "image/png"));
+}
 
 export async function composeChiikawaPrint(imageUrl: string): Promise<Blob> {
   const frame = CHIIKAWA_FRAME;

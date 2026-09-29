@@ -1,0 +1,457 @@
+[
+  {
+    "file": "AI_1.svg",
+    "sourceSha256": "49ffd74bbc1b89c2c2e2d4fdb353e47181a3a8f5098744ed0b1da801a70995f0",
+    "optimizedSha256": "5b8a66032bb3844d04bbcc0bc9ab9947c17efb1ab1f252feebce0a3a31f57885",
+    "before": 2096192,
+    "after": 171820,
+    "crop": [
+      382,
+      22,
+      676,
+      345
+    ]
+  },
+  {
+    "file": "AI_2.svg",
+    "sourceSha256": "0aeea0e591a18e7c55c6dda4cbb53b6d3998879f7528ef932adf7e3d9f0e7383",
+    "optimizedSha256": "169d72afe076242c3064360bc5d23d7e4ef953977439c7e6bc88c2c3a001a03f",
+    "before": 2096183,
+    "after": 184730,
+    "crop": [
+      0,
+      339,
+      348,
+      670
+    ]
+  },
+  {
+    "file": "AI_3.svg",
+    "sourceSha256": "9b8f316eef5236e030f3ec7372d7782b42b7767826323b8ef10647359c34292d",
+    "optimizedSha256": "4ade16198d8297a2e043467aac53146a65a5273a0d6c5048825bca136099eb56",
+    "before": 1545961,
+    "after": 161982,
+    "crop": [
+      5,
+      0,
+      361,
+      346
+    ]
+  },
+  {
+    "file": "AI_5.svg",
+    "sourceSha256": "67ee2592aa02633e2e90e613b17e73fc9f7e20246c4e6f1a415ba02a9e133de1",
+    "optimizedSha256": "c4b4923b43692701055fddb270c78e45954d70a58b227d2cf80c2305561a1658",
+    "before": 2096192,
+    "after": 203828,
+    "crop": [
+      681,
+      18,
+      1011,
+      341
+    ]
+  },
+  {
+    "file": "AI_7.svg",
+    "sourceSha256": "3df272b041c9fb04a0a68b366e57aee3fb752daa177cc0f0b134a3022e1a1ac2",
+    "optimizedSha256": "fd047f0d12a1cc96b53f1d22a36407fa5a769504fff2116c143fbd88e4393cab",
+    "before": 1568274,
+    "after": 176287,
+    "crop": [
+      678,
+      329,
+      1024,
+      663
+    ]
+  },
+  {
+    "file": "data_2.svg",
+    "sourceSha256": "2f96722ae3ea6232c9abcb286262baa0a940bd101b8ddded5db0e7ac0c7f96b2",
+    "optimizedSha256": "d18f0099ba1adcfafa386f91ce84b3c75bfa550344d329a40c6df4958c71c2f6",
+    "before": 1249188,
+    "after": 114043,
+    "crop": [
+      670,
+      8,
+      1016,
+      311
+    ]
+  },
+  {
+    "file": "data_7.svg",
+    "sourceSha256": "2c61eec091ef322700940284d21e3ae8a81bd351ba85853f05fbf241b5d377a9",
+    "optimizedSha256": "bbce8786d8d95309863e28c6746119ed9fabfcf0c7ef27ac39d257ec74e21b93",
+    "before": 1249186,
+    "after": 133783,
+    "crop": [
+      682,
+      594,
+      1024,
+      895
+    ]
+  },
+  {
+    "file": "DH_4.svg",
+    "sourceSha256": "f472347261fcd11fe9cde7dbeb5f83b1ec1a14de2c06fcc52b0caee31e01cf27",
+    "optimizedSha256": "4c0e05a6c9887e1215e8bbd0a8b2d58ea36e759fa001e906316fbb28a5d9a86d",
+    "before": 1215280,
+    "after": 122615,
+    "crop": [
+      0,
+      293,
+      354,
+      611
+    ]
+  },
+  {
+    "file": "image 108.svg",
+    "sourceSha256": "84941319ac1aef502d72ed5990edd0e029364dab332c5e234a6ef0e44f91d4c6",
+    "optimizedSha256": "33b7ffc54ccff0a8098c3c4790c4c32cd292a4ad8e6a53b3e20072a935915057",
+    "before": 1348942,
+    "after": 120705,
+    "crop": [
+      0,
+      487,
+      358,
+      794
+    ]
+  },
+  {
+    "file": "image 109.svg",
+    "sourceSha256": "fe4790f42aa28e805bb2f5ab1c3030ec29f79ed30562c80346fe2edc852be5d9",
+    "optimizedSha256": "af95e450a104e0536bed80de5d431fad3ae12bd09f75dc06090819ced7bbaf67",
+    "before": 1348952,
+    "after": 164763,
+    "crop": [
+      7,
+      126,
+      375,
+      481
+    ]
+  },
+  {
+    "file": "image 110.svg",
+    "sourceSha256": "a94d483bc22ef325d24a0fe17b6009300200a3bbf96c6cb93a38f1c9f26e3fbf",
+    "optimizedSha256": "c7863297ca78b25361369f4da1e1516211e8f430b3e80fbc3a609e43340142f8",
+    "before": 1348950,
+    "after": 133795,
+    "crop": [
+      344,
+      479,
+      691,
+      791
+    ]
+  },
+  {
+    "file": "image 111.svg",
+    "sourceSha256": "e4f61233c66ba1206ec6caadd44ee8935d646a480debd7e41ae487fea05e5f65",
+    "optimizedSha256": "3f21fbe82182e89af4e2021ef593e9d8d36bca2108ecddaddd67e0220392c85c",
+    "before": 1348950,
+    "after": 131059,
+    "crop": [
+      682,
+      476,
+      1024,
+      788
+    ]
+  },
+  {
+    "file": "image 113.svg",
+    "sourceSha256": "e2a86e58a5815169fe3b3b2f3458249330aeb64ce26b9d64111425daa4bf078f",
+    "optimizedSha256": "6bbb6622171b753ca892c2e86bb50131d6455f9d1ce6b0eef93da5b3e5744d25",
+    "before": 505200,
+    "after": 460628,
+    "crop": [
+      21,
+      0,
+      1069,
+      890
+    ]
+  },
+  {
+    "file": "mc_6-1.svg",
+    "sourceSha256": "2f8b9ae1c0c5e0556e9d684f5937e82a81b6e3fbb8bd722590e3929de0c69309",
+    "optimizedSha256": "eab7819e4c3fcedf22d3d45478f6434936b19ab29b5549ede48affd7124d4e9b",
+    "before": 1099295,
+    "after": 120896,
+    "crop": [
+      305,
+      0,
+      634,
+      265
+    ]
+  },
+  {
+    "file": "mc_6-2.svg",
+    "sourceSha256": "1777272dea51618e0b9bc67073cb09cc4f062c755e340d8987b6e015090d6a0a",
+    "optimizedSha256": "cc2d5452a2612cf40645eb286ee2d8db84eb54b070b3a785341ff5a2a6efbd1f",
+    "before": 1099293,
+    "after": 104702,
+    "crop": [
+      626,
+      0,
+      935,
+      265
+    ]
+  },
+  {
+    "file": "mc_6-3.svg",
+    "sourceSha256": "5ebe5891f08340bb6280cac9d428715523fe556a3d1b1c93495532cf641cf999",
+    "optimizedSha256": "f4ef2b27345584cfe2d4a27f0114f67dffb2be1be112bb59f566a48b2d67d935",
+    "before": 1099298,
+    "after": 112551,
+    "crop": [
+      0,
+      256,
+      314,
+      537
+    ]
+  },
+  {
+    "file": "mc_6-4.svg",
+    "sourceSha256": "41b17d824e39b7715ff5ae3c75fa2cd674fb27136d5752f46e1ca918db45289f",
+    "optimizedSha256": "39052f04e084412a56760c4aaeebf88e55e4a880499a86e834915ee40fa5ecab",
+    "before": 1099303,
+    "after": 123670,
+    "crop": [
+      305,
+      255,
+      634,
+      544
+    ]
+  },
+  {
+    "file": "mc_6-5.svg",
+    "sourceSha256": "c10fced7122bec1d8dfdcfec3e34d8badcd3e47e214d7edff62c1ae8899d4a85",
+    "optimizedSha256": "fda3583673224bdbdb086d82c0f2df6c9c448c6f77782ddd5462452c3dc760d3",
+    "before": 1099297,
+    "after": 109248,
+    "crop": [
+      625,
+      536,
+      940,
+      815
+    ]
+  },
+  {
+    "file": "mc_6.svg",
+    "sourceSha256": "f4d8871d9a68d94e33a65957c187145ff19de7900f4521a7d7046728208ea84e",
+    "optimizedSha256": "ad58ed414ccdb6b817906cd20ad9451f37d5eddd238ab5a583b567d586b6e3e4",
+    "before": 1099281,
+    "after": 111996,
+    "crop": [
+      0,
+      0,
+      314,
+      265
+    ]
+  },
+  {
+    "file": "nurse_7.svg",
+    "sourceSha256": "01b8b58092d21914180517cd61612099097e6ca5f3955312ab31e690232b7760",
+    "optimizedSha256": "3fc0e69aad7ee15ae64d7cb46afd470986ed23fe78027a43d95f61ae620ea714",
+    "before": 1301963,
+    "after": 150164,
+    "crop": [
+      659,
+      320,
+      1024,
+      664
+    ]
+  },
+  {
+    "file": "nurse_8-1.svg",
+    "sourceSha256": "6cc4438d4bfd3e5a59f3f075ad4aec8253da92ab6e773207057a6d5ccaf8d352",
+    "optimizedSha256": "2ac50eb1669a5a683d67ea2e946806c7a5537af28c94b035f5993b241a63513f",
+    "before": 1301967,
+    "after": 140822,
+    "crop": [
+      332,
+      0,
+      703,
+      355
+    ]
+  },
+  {
+    "file": "nurse_8-2.svg",
+    "sourceSha256": "80fb8e88834c625838735b37dd6d0c5054f3bc730ca6f0d39d2b8cb17ede8a3a",
+    "optimizedSha256": "d3f322345dd8d1cc40cc11a8b1d8b1298dd0e5d75440eeeb9fcab3c17e5b65f7",
+    "before": 1301968,
+    "after": 135296,
+    "crop": [
+      11,
+      323,
+      371,
+      654
+    ]
+  },
+  {
+    "file": "nurse_8.svg",
+    "sourceSha256": "6d2d7d9bcdc8a2afb724c97056c98f154de1b9260a34f06d4b69e14a791af95d",
+    "optimizedSha256": "4f0e17d896c8a0bde0d68db97a5d7bc2c4ef25119c7825d4398c2442097aaa39",
+    "before": 1301961,
+    "after": 142698,
+    "crop": [
+      332,
+      315,
+      694,
+      656
+    ]
+  },
+  {
+    "file": "경영1.svg",
+    "sourceSha256": "0db19e7ba8a9f494edfb41ec84ea84b12432fbb6620628b253a20fda09b013ea",
+    "optimizedSha256": "98bed6ef81a55ee01d42bc7ee122a935af8845f9b7329b6a64536412427a9441",
+    "before": 1386354,
+    "after": 138203,
+    "crop": [
+      0,
+      0,
+      369,
+      299
+    ]
+  },
+  {
+    "file": "경영2.svg",
+    "sourceSha256": "660e060fd6d6e30b1f3bbfef7a7bf91a3e55e3368290f514f8c0958281a8a22f",
+    "optimizedSha256": "36e00172913d2cbd7137ba932bae9a987e7698ced5d3c65daed8ee3912ac3007",
+    "before": 1265166,
+    "after": 152087,
+    "crop": [
+      320,
+      285,
+      704,
+      622
+    ]
+  },
+  {
+    "file": "디보1.svg",
+    "sourceSha256": "bbb0058410f91a83784f49747f5f970ddf2f340fbc7267f7c6d2a0d133c1c534",
+    "optimizedSha256": "66f448c23f70110038206b1273f71e1f028b46208373886f32aaceaaec4b4974",
+    "before": 1215366,
+    "after": 130959,
+    "crop": [
+      0,
+      0,
+      364,
+      315
+    ]
+  },
+  {
+    "file": "바식1.svg",
+    "sourceSha256": "3151b0342cfd5f90a3bf8a7b1ea36fc481f22c5c39066d6fca1f74042ac7dd71",
+    "optimizedSha256": "ad9af559b82c5d0e76d6df7b411b157c839dacfa7061f91f44f69d791db4c6a0",
+    "before": 1492739,
+    "after": 134975,
+    "crop": [
+      11,
+      477,
+      357,
+      809
+    ]
+  },
+  {
+    "file": "바식2.svg",
+    "sourceSha256": "09eceee05ddc7072997dca280539b347b407c107f16b651a49fb12773f9df6e5",
+    "optimizedSha256": "27ecf6b5f79db61cc221785119b2066c133ae24553eb13c5468d7389d4681f15",
+    "before": 1492731,
+    "after": 165860,
+    "crop": [
+      676,
+      790,
+      1024,
+      1122
+    ]
+  },
+  {
+    "file": "상심2.svg",
+    "sourceSha256": "3cc27c7e8d7af7f7d86082c0f46efaa125372d0cd81c0bd420f043fe907ebbbb",
+    "optimizedSha256": "757de0860d3c5a2fc0dd82dee8d6234ff85259d169b6b98591e9e4f2fdf9cc5e",
+    "before": 1348955,
+    "after": 122728,
+    "crop": [
+      687,
+      160,
+      1003,
+      480
+    ]
+  },
+  {
+    "file": "세유1.svg",
+    "sourceSha256": "9a82e37af1d954177abb001201dffffa529142c86c85fbc81bfdc442efd77574",
+    "optimizedSha256": "44359f48c810c15e6ae64be313eb9393fc3689495efcea584f4f5b730c1a250b",
+    "before": 1521535,
+    "after": 150587,
+    "crop": [
+      345,
+      88,
+      692,
+      421
+    ]
+  },
+  {
+    "file": "세유2.svg",
+    "sourceSha256": "da665544656c7adf5c75b67f00909645db6399e98693d3ba9b0f9f504e75fe8f",
+    "optimizedSha256": "44d911e8f47c9d8fee1f6eaca5277d1fc3905873de9478ca38d41aa602eba231",
+    "before": 1548298,
+    "after": 148171,
+    "crop": [
+      664,
+      418,
+      1024,
+      779
+    ]
+  },
+  {
+    "file": "시스템1.svg",
+    "sourceSha256": "9c67addaf4bfbf8047ace68ca5a2d618a492a23efb9fb8adf4e196d8001862b9",
+    "optimizedSha256": "e80ddc181f7a92a23ddea62bfb13668027e8cb8f87cf50d4de0fbb6f82017b2e",
+    "before": 1800590,
+    "after": 229754,
+    "crop": [
+      331,
+      69,
+      718,
+      510
+    ]
+  },
+  {
+    "file": "시스템2.svg",
+    "sourceSha256": "d4b10b143a279ea546d7f285736705806cb3f6595e576db0728f07cd56ce2261",
+    "optimizedSha256": "836a1b29221c0155c1f3753cd888bad5fe6f6c68e54ad573cbcab4eb2aeaab8b",
+    "before": 1800506,
+    "after": 202411,
+    "crop": [
+      341,
+      463,
+      690,
+      803
+    ]
+  },
+  {
+    "file": "약학1.svg",
+    "sourceSha256": "0abd7b4336a65569792160ea2e3e9833ac876988cf05767a9767b0942929d858",
+    "optimizedSha256": "e1377f108723a2dad0da8daf2cba6acf7b78c8dca0459d7ccbc546ac5a343402",
+    "before": 1400906,
+    "after": 170329,
+    "crop": [
+      0,
+      497,
+      357,
+      841
+    ]
+  },
+  {
+    "file": "약학2.svg",
+    "sourceSha256": "3a2e09628cd8e3a5fc0ae6b41e44f1c4f3def11c756b11c698899e13f134575d",
+    "optimizedSha256": "1600290ddf63ede2a371ec8fead65eedd570ca1a6197d3bdf620b79ffb1fdd70",
+    "before": 1582044,
+    "after": 133029,
+    "crop": [
+      378,
+      151,
+      684,
+      476
+    ]
+  }
+]
