@@ -1,5 +1,8 @@
 import { HomecomingBackdrop, HomecomingStyleSelect, HomecomingPhotoSelect } from "./HomecomingFrame";
 import { isHomecomingFrame } from "./shared/homecomingFrames";
+import { PocheonBackdrop, PocheonFrame, PocheonStyleSelect } from "./PocheonFrame";
+import { isPocheonFrame } from "./shared/pocheonFrames";
+import { composePocheonPrint } from "./lib/composeCanvas";
 import { ChiikawaFrame } from "./ChiikawaFrame";
 import { ChiikawaStyleSelect } from "./ChiikawaStyleSelect";
 import { CHIIKAWA_FRAME_ID, CHIIKAWA_FRAME } from "./shared/chiikawaFrame";
@@ -447,7 +450,9 @@ export function App() {
         setJob({ uuid: session.uuid, status: "COMPOSING", progress: 10 });
 
         console.log("[startJob] 1️⃣ 이미지 합성 시작...");
-        const blob = isHomecomingFrame(effectiveFrameId)
+        const blob = isPocheonFrame(effectiveFrameId)
+          ? await composePocheonPrint(urls, effectiveFrameId)
+          : isHomecomingFrame(effectiveFrameId)
           ? await composeHomecomingPrint(urls, effectiveFrameId)
           : effectiveFrameId.startsWith("bh_bio")
           ? await composeBioPrint(urls, effectiveFrameId as "bh_bio_black" | "bh_bio_pink")
@@ -498,7 +503,7 @@ export function App() {
       return;
     }
 
-    if (!isHomecomingFrame(effectiveFrameId) && window.kioskApi?.startJob) {
+    if (!isHomecomingFrame(effectiveFrameId) && !isPocheonFrame(effectiveFrameId) && window.kioskApi?.startJob) {
       try {
         await window.kioskApi.startJob({
           uuid: session.uuid,
@@ -1037,6 +1042,9 @@ export function App() {
   }, [jobActive, session, printJobFilePath]);
 
   const isHomecoming = isHomecomingFrame(frameId);
+  const isPocheon = isPocheonFrame(frameId);
+  const isPortrait = isHomecoming || isPocheon;
+  const FlowBackdrop = isPocheon ? PocheonBackdrop : HomecomingBackdrop;
   const isChiikawa = frameId === CHIIKAWA_FRAME_ID;
   const isBasic = frameId.startsWith("basic");
   const isBio = frameId.startsWith("bh_bio");
@@ -1044,8 +1052,8 @@ export function App() {
   return (
     <div className="app-viewport">
     <div className="app-scale">
-    <main className={`screen ${step === "MAIN" ? "screen--main" : ""} ${isHomecoming && step !== "MAIN" ? "screen--homecoming" : ""} ${step === "FRAME_CONFIRM" ? (isBio ? "screen--frameConfirm screen--frameConfirm-bio" : isBasic ? "screen--frameConfirm screen--frameConfirm-basic" : "screen--frameConfirm screen--frameConfirm-designed") : ""} ${step === "QUANTITY" ? (isAiFrame(frameId) ? "screen--quantity" : isBio ? "screen--quantity screen--quantity-bio" : isBasic ? "screen--quantity screen--quantity-basic" : "screen--quantity screen--quantity-designed") : ""} ${step === "CAMERA_GUIDE" || step === "AC_CAMERA_GUIDE" ? "screen--cameraGuide" : ""} ${step === "SHOOTING" || step === "AC_SHOOTING" ? "screen--shooting" : ""} ${step === "LOADING" || step === "AC_TRANSFORMING" ? "screen--loading" : ""} ${step === "SELECT" || step === "AC_SELECT" ? "screen--select" : ""} ${step === "DESIGN" ? "screen--design" : ""} ${step === "PRINTING" ? "screen--printing" : ""} ${step === "END" ? "screen--end" : ""} ${step === "AC_RESULT" ? "screen--acResult" : ""} ${isAiFrame(frameId) && step !== "MAIN" ? "screen--acTheme" : ""} ${isBio && step !== "MAIN" ? "screen--bioTheme" : ""} ${isChiikawa && step !== "MAIN" ? "screen--chiikawaTheme" : ""}`}>
-      {isHomecoming && ["QUANTITY", "CAMERA_GUIDE", "END"].includes(step) && <HomecomingBackdrop />}
+    <main className={`screen ${step === "MAIN" ? "screen--main" : ""} ${isPortrait && step !== "MAIN" ? "screen--homecoming" : ""} ${isPocheon && step !== "MAIN" ? "screen--pocheon" : ""} ${step === "FRAME_CONFIRM" ? (isBio ? "screen--frameConfirm screen--frameConfirm-bio" : isBasic ? "screen--frameConfirm screen--frameConfirm-basic" : "screen--frameConfirm screen--frameConfirm-designed") : ""} ${step === "QUANTITY" ? (isAiFrame(frameId) ? "screen--quantity" : isBio ? "screen--quantity screen--quantity-bio" : isBasic ? "screen--quantity screen--quantity-basic" : "screen--quantity screen--quantity-designed") : ""} ${step === "CAMERA_GUIDE" || step === "AC_CAMERA_GUIDE" ? "screen--cameraGuide" : ""} ${step === "SHOOTING" || step === "AC_SHOOTING" ? "screen--shooting" : ""} ${step === "LOADING" || step === "AC_TRANSFORMING" ? "screen--loading" : ""} ${step === "SELECT" || step === "AC_SELECT" ? "screen--select" : ""} ${step === "DESIGN" ? "screen--design" : ""} ${step === "PRINTING" ? "screen--printing" : ""} ${step === "END" ? "screen--end" : ""} ${step === "AC_RESULT" ? "screen--acResult" : ""} ${isAiFrame(frameId) && step !== "MAIN" ? "screen--acTheme" : ""} ${isBio && step !== "MAIN" ? "screen--bioTheme" : ""} ${isChiikawa && step !== "MAIN" ? "screen--chiikawaTheme" : ""}`}>
+      {isPortrait && ["QUANTITY", "CAMERA_GUIDE", "END"].includes(step) && <FlowBackdrop />}
       {step === "MAIN" && (
         <>
           {/* 설정 버튼 (우상단) */}
@@ -1080,8 +1088,9 @@ export function App() {
             <img className="mainCardBasic__char" src={asset("main/image-88.png")} alt="" />
           </button>
 
-          {/* Homecoming entry is hidden while the Pocheon menu design is previewed. */}
-          <button type="button" className="mainPocheon" aria-label="포천네것 프레임 (준비 중)" disabled>
+          <button type="button" className="mainPocheon" aria-label="포천네것 프레임" onClick={() => {
+            setFrameId("pocheon_1"); setStep("POCHEON_STYLE_SELECT");
+          }}>
             <img src={asset("pocheon/menu-button.png")} alt="" />
           </button>
 
@@ -1147,6 +1156,10 @@ export function App() {
       )}
 
       {step === "HOMECOMING_STYLE_SELECT" && <HomecomingStyleSelect onSelect={id => {
+        setFrameId(id); void startSession(id);
+      }} />}
+
+      {step === "POCHEON_STYLE_SELECT" && <PocheonStyleSelect onSelect={id => {
         setFrameId(id); void startSession(id);
       }} />}
 
@@ -1273,12 +1286,13 @@ export function App() {
 
       {step === "QUANTITY" && (
         <>
-          <h1 className="quantityTitle">{isHomecoming ? "인쇄 갯수" : "인쇄 매수"}</h1>
+          <h1 className="quantityTitle">{isPortrait ? "인쇄 갯수" : "인쇄 매수"}</h1>
           <div className="quantityCount">{copies}</div>
           <button type="button" className="btnQuantitySymbol btnQuantityMinus" onClick={() => setCopies((v) => Math.max(1, v - 1))} aria-label="감소">−</button>
           <button type="button" className="btnQuantitySymbol btnQuantityPlus" onClick={() => setCopies((v) => Math.min(4, v + 1))} aria-label="증가">+</button>
           <button type="button" className={isBio ? "btnQuantityPrev btnBioQuantityPrev" : "btnQuantityPrev"} onClick={() => {
-            if (isHomecoming) setStep("HOMECOMING_STYLE_SELECT");
+            if (isPocheon) setStep("POCHEON_STYLE_SELECT");
+            else if (isHomecoming) setStep("HOMECOMING_STYLE_SELECT");
             else if (isChiikawa) setStep("CHIIKAWA_STYLE_SELECT");
             else if (isAiFrame(frameId)) setStep("MAIN");
             else if (isBasic) setStep("FRAME_CONFIRM");
@@ -1290,7 +1304,7 @@ export function App() {
 
       {(step === "CAMERA_GUIDE" || step === "AC_CAMERA_GUIDE") && (
         <>
-          {isChiikawa || isHomecoming ? null : isBio
+          {isChiikawa || isPortrait ? null : isBio
             ? <img src={asset("bh_bio_frame/image 153.png")} alt="" className="cameraGuide__illus cameraGuide__illus--bio" />
             : <img src={asset("Group 8.png")} alt="" className="cameraGuide__illus" />
           }
@@ -1298,14 +1312,14 @@ export function App() {
           <p className="cameraGuide__text2">촬영은 총 {isAiFrame(frameId) ? SHOT_TOTAL_AC : isBio ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT}번 진행됩니다</p>
           {cameraError && <p className="errorText">{cameraError}</p>}
           <button type="button" className={isBio ? "btnQuantityPrev btnBioCameraGuidePrev" : "btnQuantityPrev"} onClick={() => setStep("QUANTITY")}>이전</button>
-          <button type="button" className={isBio ? "btnCameraStart btnBioCameraStart" : "btnCameraStart"} onClick={startShooting}>{isChiikawa || isHomecoming ? "다음" : "촬영 시작"}</button>
+          <button type="button" className={isBio ? "btnCameraStart btnBioCameraStart" : "btnCameraStart"} onClick={startShooting}>{isChiikawa || isPortrait ? "다음" : "촬영 시작"}</button>
         </>
       )}
 
 
       {(step === "SHOOTING" || step === "AC_SHOOTING") && (
         <>
-          <h1 className="shootingTitle">남은횟수 {isHomecoming ? Math.max(0, SHOT_TOTAL_DEFAULT - currentShot + 1) : Math.min(currentShot, isAiFrame(frameId) ? SHOT_TOTAL_AC : frameId.startsWith("bh_bio") ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT)}/{isAiFrame(frameId) ? SHOT_TOTAL_AC : frameId.startsWith("bh_bio") ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT}</h1>
+          <h1 className="shootingTitle">남은횟수 {isPortrait ? Math.max(0, SHOT_TOTAL_DEFAULT - currentShot + 1) : Math.min(currentShot, isAiFrame(frameId) ? SHOT_TOTAL_AC : frameId.startsWith("bh_bio") ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT)}/{isAiFrame(frameId) ? SHOT_TOTAL_AC : frameId.startsWith("bh_bio") ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT}</h1>
           <div className="cameraBox">
             {/* 갭 중: 찍힌 사진 표시 / 그 외: 라이브 영상 */}
             <video
@@ -1331,10 +1345,11 @@ export function App() {
         </>
       )}
 
-      {step === "SELECT" && isHomecoming && <HomecomingPhotoSelect frameId={frameId} shots={shots}
-        selectedShots={selectedShots} onToggle={toggleShot} onBack={() => setStep("CAMERA_GUIDE")} onPrint={() => void startJob()} />}
+      {step === "SELECT" && isPortrait && <HomecomingPhotoSelect frameId={frameId} shots={shots}
+        selectedShots={selectedShots} onToggle={toggleShot} onBack={() => setStep("CAMERA_GUIDE")} onPrint={() => void startJob()}
+        preview={isPocheon ? <PocheonFrame frameId={frameId} photos={selectedShots.map(shot => shot.previewUrl)} /> : undefined} />}
 
-      {!isHomecoming && (step === "SELECT" || step === "AC_SELECT") && (
+      {!isPortrait && (step === "SELECT" || step === "AC_SELECT") && (
         <>
           {!isBio && <h1 className="selectTitle">Select</h1>}
           {isChiikawa && <p className="chiikawaSelectHint">마음에 드는 사진을 한 장 골라주세요</p>}
@@ -1619,10 +1634,10 @@ export function App() {
 
       {(step === "LOADING" || step === "AC_TRANSFORMING") && (
         <div style={{ position: "absolute", inset: 0, background: isChiikawa ? CHIIKAWA_FRAME.background : isAiFrame(frameId) ? "#52C482" : "#f3f3f6", borderRadius: "30px" }}>
-          {isHomecoming && <HomecomingBackdrop />}
+          {isPortrait && <FlowBackdrop />}
           <h1 className="loadingTitle">Loading...</h1>
           {isChiikawa && <p className="loadingSub">차의대 마스코트 이름은 비오와 병헌이 입니다</p>}
-          {!isAiFrame(frameId) && !isHomecoming && <p className="loadingSub">차의대의 새로운 마스코트!<br />병헌이와 비오!</p>}
+          {!isAiFrame(frameId) && !isPortrait && <p className="loadingSub">차의대의 새로운 마스코트!<br />병헌이와 비오!</p>}
           <p className="loadingSub2">{loadingText}</p>
           <p className="loadingProgress">진행률: {job?.progress ?? 0}%</p>
         </div>
@@ -1652,9 +1667,9 @@ export function App() {
 
       {step === "PRINTING" && (
         <div style={{ position: "absolute", inset: 0, background: "#f3f3f6", borderRadius: "30px" }}>
-          {isHomecoming && <HomecomingBackdrop />}
+          {isPortrait && <FlowBackdrop />}
           <h1 className="loadingTitle">Printing...</h1>
-          <p className="loadingSub">{isHomecoming ? "의홍 미컴 포에버!" : <>차의대의 새로운 마스코트!<br />병헌이와 비오!</>}</p>
+          <p className="loadingSub">{isPocheon ? "포천에서의 추억을 인쇄하고 있어요" : isHomecoming ? "의홍 미컴 포에버!" : <>차의대의 새로운 마스코트!<br />병헌이와 비오!</>}</p>
               {job?.status === "FAILED_PRINT" && (
             <p className="errorText printingError">
               {job.errorMessage?.startsWith("SHOT_NOT_FOUND")
@@ -1672,14 +1687,14 @@ export function App() {
       {step === "END" && (
         <>
           <h1 className="endTitle">DONE!</h1>
-          <p className="endSub">{isHomecoming ? <>인쇄가 완료되었습니다<br />안녕히가십시오</> : <>인쇄가 완료되었습니다!<br />이용해주셔서 감사합니다</>}</p>
+          <p className="endSub">{isPortrait ? <>인쇄가 완료되었습니다<br />안녕히가십시오</> : <>인쇄가 완료되었습니다!<br />이용해주셔서 감사합니다</>}</p>
           <button type="button" className="btnEnd" onClick={resetFlow}>처음으로</button>
         </>
       )}
 
       {step !== "MAIN" && (
         <nav className="flowNav" aria-label="화면 이동">
-          {!isHomecoming && (step === "SELECT" || step === "AC_SELECT" || step === "AC_RESULT") && (
+          {!isPortrait && (step === "SELECT" || step === "AC_SELECT" || step === "AC_RESULT") && (
             <button type="button" className="flowNav__back" onClick={() => {
               setAcTransformError(null);
               setStep(step === "AC_RESULT" ? "AC_SELECT" : isAiFrame(frameId) ? "AC_CAMERA_GUIDE" : "CAMERA_GUIDE");

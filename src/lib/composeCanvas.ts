@@ -3,6 +3,33 @@ import type { StickerPlacement } from "../shared/types";
 import { AC_FRAME } from "../shared/animalCrossingFrame";
 import { CHIIKAWA_FRAME } from "../shared/chiikawaFrame";
 import { getHomecomingFrame } from "../shared/homecomingFrames";
+import { getPocheonFrame } from "../shared/pocheonFrames";
+
+export async function composePocheonPrint(imageUrls: string[], frameId: string): Promise<Blob> {
+  if (imageUrls.length !== 4) throw new Error("SHOT_NOT_FOUND");
+  const frame = getPocheonFrame(frameId);
+  const [art, ...photos] = await Promise.all([loadImage(asset(frame.src)), ...imageUrls.map(loadImage)]);
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 1800;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("CANVAS_CONTEXT_FAIL");
+  ctx.scale(canvas.width / frame.width, canvas.height / frame.height);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.fillStyle = "#fff6e3";
+  ctx.fillRect(0, 0, frame.width, frame.height);
+  ctx.drawImage(art, 0, 0, frame.width, frame.height);
+  frame.slots.forEach((slot, i) => {
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(slot.x, slot.y, slot.w, slot.h, slot.r);
+    ctx.clip();
+    drawImageCover(ctx, photos[i], slot.x, slot.y, slot.w, slot.h);
+    ctx.restore();
+  });
+  return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("BLOB_FAIL")), "image/png"));
+}
 
 export async function composeHomecomingPrint(imageUrls: string[], frameId: string): Promise<Blob> {
   if (imageUrls.length !== 4) throw new Error("SHOT_NOT_FOUND");

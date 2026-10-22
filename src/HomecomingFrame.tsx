@@ -1,6 +1,7 @@
 import { asset } from "./design/asset";
 import { getHomecomingFrame, HOMECOMING_FRAMES } from "./shared/homecomingFrames";
 import type { Shot } from "./shared/types";
+import type { ReactNode } from "react";
 
 export function HomecomingBackdrop({ selection = false }: { selection?: boolean }) {
   return <div className={`homecomingBackdrop ${selection ? "homecomingBackdrop--selection" : ""}`} aria-hidden="true">
@@ -32,14 +33,15 @@ export function HomecomingStyleSelect({ onSelect }: { onSelect: (id: string) => 
   </section>;
 }
 
-export function HomecomingPhotoSelect({ frameId, shots, selectedShots, onToggle, onBack, onPrint }: {
+export function HomecomingPhotoSelect({ frameId, shots, selectedShots, onToggle, onBack, onPrint, preview }: {
   frameId: string; shots: Shot[]; selectedShots: Shot[]; onToggle: (index: number) => void;
   onBack: () => void; onPrint: () => void;
+  preview?: ReactNode;
 }) {
   return <>
     <h1 className="homecomingSelect__title">Select</h1>
     <p className="homecomingSelect__hint">마음에 드는 사진을 네 장 골라주세요</p>
-    <div className="homecomingSelect__preview"><HomecomingFrame frameId={frameId} photos={selectedShots.map(s => s.previewUrl)} /></div>
+    <div className="homecomingSelect__preview">{preview ?? <HomecomingFrame frameId={frameId} photos={selectedShots.map(s => s.previewUrl)} />}</div>
     <div className="homecomingSelect__grid">{shots.map(shot => <button type="button" key={shot.index}
       className={`shotCard ${shot.selectedOrder !== null ? "selected" : ""}`} aria-pressed={shot.selectedOrder !== null}
       aria-label={`사진 ${shot.index + 1}${shot.selectedOrder !== null ? `, ${shot.selectedOrder}번째 선택` : ""}`}
