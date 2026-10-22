@@ -1080,11 +1080,9 @@ export function App() {
             <img className="mainCardBasic__char" src={asset("main/image-88.png")} alt="" />
           </button>
 
-          <button type="button" className="mainHomecoming" aria-label="의미있는 밤 프레임" onClick={() => {
-            setFrameId("homecoming_1"); setStep("HOMECOMING_STYLE_SELECT");
-          }}>
-            <img className="mainHomecoming__background" src={asset("homecoming/menu-background.png")} alt="" />
-            <span className="mainHomecoming__label"><img src={asset("homecoming/menu-label.png")} alt="" /></span>
+          {/* Homecoming entry is hidden while the Pocheon menu design is previewed. */}
+          <button type="button" className="mainPocheon" aria-label="포천네것 프레임 (준비 중)" disabled>
+            <img src={asset("pocheon/menu-button.png")} alt="" />
           </button>
 
           {/* DESIGNED FRAME 카드 (Frame 10, 우측 중단) */}
