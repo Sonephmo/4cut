@@ -25,7 +25,14 @@ export async function composePocheonPrint(imageUrls: string[], frameId: string):
     ctx.beginPath();
     ctx.roundRect(slot.x, slot.y, slot.w, slot.h, slot.r);
     ctx.clip();
-    drawImageCover(ctx, photos[i], slot.x, slot.y, slot.w, slot.h);
+    // Natural frame rows differ by four pixels. Fit the saved crop completely
+    // inside either opening instead of cropping it again after selection.
+    ctx.fillStyle = "#e6ece6";
+    ctx.fillRect(slot.x, slot.y, slot.w, slot.h);
+    const scale = Math.min(slot.w / photos[i].naturalWidth, slot.h / photos[i].naturalHeight);
+    const width = photos[i].naturalWidth * scale;
+    const height = photos[i].naturalHeight * scale;
+    ctx.drawImage(photos[i], slot.x + (slot.w - width) / 2, slot.y + (slot.h - height) / 2, width, height);
     ctx.restore();
   });
   return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("BLOB_FAIL")), "image/png"));

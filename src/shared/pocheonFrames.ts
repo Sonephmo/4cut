@@ -13,3 +13,16 @@ export function getPocheonFrame(id: string) {
   if (!frame) throw new Error(`Unknown Pocheon frame: ${id}`);
   return frame;
 }
+
+/** Match the camera viewport and stored photo to the frame's first opening. */
+export function getPocheonCaptureCrop(id: string, sourceWidth: number, sourceHeight: number) {
+  if (sourceWidth <= 0 || sourceHeight <= 0) throw new Error("VIDEO_NOT_READY");
+  const slot = getPocheonFrame(id).slots[0];
+  const aspect = slot.w / slot.h;
+  const width = Math.min(sourceWidth, sourceHeight * aspect);
+  const height = width / aspect;
+  return {
+    x: (sourceWidth - width) / 2, y: (sourceHeight - height) / 2,
+    width, height, outputWidth: Math.round(width), outputHeight: Math.round(height),
+  };
+}

@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HomecomingPhotoSelect } from '../src/HomecomingFrame';
-import { POCHEON_FRAMES } from '../src/shared/pocheonFrames';
+import { POCHEON_FRAMES, getPocheonCaptureCrop } from '../src/shared/pocheonFrames';
+import { captureCameraFrame } from '../src/lib/captureFrame';
 import { PocheonFrame } from '../src/PocheonFrame';
 import { composePocheonPrint } from '../src/lib/composeCanvas';
 import type { Shot } from '../src/shared/types';
@@ -25,6 +26,34 @@ function Review() {
   const verify = async () => {
     try {
       for (const frame of POCHEON_FRAMES) {
+        // Simulate wide, standard and portrait cameras. Edge colors must survive
+        // capture and final placement in every slot, including shorter bottom slots.
+        for (const [width, height] of [[1920,1080], [640,480], [720,1280]]) {
+          const source = document.createElement('canvas'); source.width=width; source.height=height;
+          const sourceCtx=source.getContext('2d')!;
+          const crop=getPocheonCaptureCrop(frame.id,width,height);
+          const aspect=frame.slots[0].w/frame.slots[0].h;
+          if (Math.abs(crop.width/crop.height-aspect)>1e-9 || Math.abs(crop.x*2+crop.width-width)>1e-6 || Math.abs(crop.y*2+crop.height-height)>1e-6) throw Error('camera crop geometry');
+          sourceCtx.fillStyle='#ff00ff';sourceCtx.fillRect(0,0,width,height);
+          sourceCtx.fillStyle='#ffffff';sourceCtx.fillRect(crop.x,crop.y,crop.width,crop.height);
+          sourceCtx.fillStyle='#00ffff';sourceCtx.fillRect(crop.x,crop.y,crop.width*.15,crop.height);
+          sourceCtx.fillStyle='#ffff00';sourceCtx.fillRect(crop.x+crop.width*.85,crop.y,crop.width*.15,crop.height);
+          const captured=captureCameraFrame(source,width,height,frame.id);
+          if (Math.abs(captured.width/captured.height-aspect)>.003) throw Error('saved photo aspect');
+          const cropBlob=await composePocheonPrint(Array(4).fill(captured.toDataURL()),frame.id);
+          const cropBitmap=await createImageBitmap(cropBlob);
+          const result=document.createElement('canvas');result.width=1200;result.height=1800;
+          const resultCtx=result.getContext('2d')!;resultCtx.drawImage(cropBitmap,0,0);
+          for (const slot of frame.slots) {
+            for (const [fraction,expected] of [[.05,[255,255,0]],[.95,[0,255,255]]] as const) {
+              const x=Math.round((slot.x+slot.w*fraction)*1200/frame.width);
+              const y=Math.round((slot.y+slot.h*.5)*1800/frame.height);
+              const pixel=resultCtx.getImageData(x,y,1,1).data;
+              if(expected.some((value,i)=>Math.abs(value-pixel[i])>2)) throw Error('captured edges cropped or mirror mismatch');
+            }
+          }
+          cropBitmap.close();
+        }
         const blob = await composePocheonPrint(order.map(i => photos[i]), frame.id);
         const bitmap = await createImageBitmap(blob);
         if (bitmap.width !== 1200 || bitmap.height !== 1800) throw Error('print dimensions');
@@ -42,7 +71,7 @@ function Review() {
         const link=document.createElement('a');link.textContent=frame.name+' PNG';link.download=frame.id+'.png';link.href=URL.createObjectURL(blob);
         link.style.cssText='display:block;background:white;color:black;padding:10px';document.getElementById('results')!.append(link);
       }
-      setMessage('PASS: 2 layouts, 1200×1800, 8 photo slots and selected order');
+      setMessage('PASS: 6 camera crops, mirrored edges in 24 slots, 2 layouts, 1200×1800, selected order');
     } catch(e) {setMessage('FAIL: '+String(e));}
   };
   return <><div className="app-viewport"><div className="app-scale"><main className="screen screen--select screen--homecoming screen--pocheon">

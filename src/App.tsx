@@ -1,8 +1,9 @@
 import { HomecomingBackdrop, HomecomingStyleSelect, HomecomingPhotoSelect } from "./HomecomingFrame";
 import { isHomecomingFrame } from "./shared/homecomingFrames";
 import { PocheonBackdrop, PocheonFrame, PocheonStyleSelect } from "./PocheonFrame";
-import { isPocheonFrame } from "./shared/pocheonFrames";
+import { isPocheonFrame, getPocheonFrame } from "./shared/pocheonFrames";
 import { composePocheonPrint } from "./lib/composeCanvas";
+import { captureCameraFrame } from "./lib/captureFrame";
 import { ChiikawaFrame } from "./ChiikawaFrame";
 import { ChiikawaStyleSelect } from "./ChiikawaStyleSelect";
 import { CHIIKAWA_FRAME_ID, CHIIKAWA_FRAME } from "./shared/chiikawaFrame";
@@ -251,20 +252,7 @@ export function App() {
       throw new Error("VIDEO_NOT_READY");
     }
 
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const context = canvas.getContext("2d");
-    if (!context) {
-      throw new Error("CANVAS_CONTEXT_FAIL");
-    }
-
-    // 전면 카메라 스트림은 하드웨어 수준에서 미러링되어 들어옴.
-    // canvas에만 좌우반전을 적용해 저장·인쇄 결과를 정방향으로 맞춤.
-    // 라이브 미리보기 CSS는 건드리지 않아 셀카 느낌은 유지.
-    context.translate(canvas.width, 0);
-    context.scale(-1, 1);
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const canvas = captureCameraFrame(video, video.videoWidth, video.videoHeight, frameId);
 
     const blob = await new Promise<Blob>((resolve, reject) => {
       canvas.toBlob(
@@ -1043,6 +1031,7 @@ export function App() {
 
   const isHomecoming = isHomecomingFrame(frameId);
   const isPocheon = isPocheonFrame(frameId);
+  const pocheonCaptureSlot = isPocheon ? getPocheonFrame(frameId).slots[0] : null;
   const isPortrait = isHomecoming || isPocheon;
   const FlowBackdrop = isPocheon ? PocheonBackdrop : HomecomingBackdrop;
   const isChiikawa = frameId === CHIIKAWA_FRAME_ID;
@@ -1320,7 +1309,10 @@ export function App() {
       {(step === "SHOOTING" || step === "AC_SHOOTING") && (
         <>
           <h1 className="shootingTitle">남은횟수 {isPortrait ? Math.max(0, SHOT_TOTAL_DEFAULT - currentShot + 1) : Math.min(currentShot, isAiFrame(frameId) ? SHOT_TOTAL_AC : frameId.startsWith("bh_bio") ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT)}/{isAiFrame(frameId) ? SHOT_TOTAL_AC : frameId.startsWith("bh_bio") ? SHOT_TOTAL_BIO : SHOT_TOTAL_DEFAULT}</h1>
-          <div className="cameraBox">
+          <div className="cameraBox" style={pocheonCaptureSlot ? {
+            height: 570 * pocheonCaptureSlot.h / pocheonCaptureSlot.w,
+            borderRadius: 570 * pocheonCaptureSlot.r / pocheonCaptureSlot.w,
+          } : undefined}>
             {/* 갭 중: 찍힌 사진 표시 / 그 외: 라이브 영상 */}
             <video
               ref={videoRef}

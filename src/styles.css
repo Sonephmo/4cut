@@ -2026,7 +2026,9 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .pocheonFrame { position: relative; width: 100%; height: 100%; }
 .pocheonFrame__art { position: absolute; inset: 0; width: 100%; height: 100%; }
 .pocheonFrame__photo { position: absolute; overflow: hidden; background: #e6ece6; display: grid; place-items: center; color: #547460; font-size: 28px; }
-.pocheonFrame__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pocheonFrame__photo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.screen--pocheon .homecomingSelect__grid .shotCard img { object-fit: contain; }
+.screen--pocheon .cameraBox__captured { object-fit: contain; }
 .screen--pocheon .quantityTitle, .screen--pocheon .quantityCount, .screen--pocheon .btnQuantitySymbol,
 .screen--pocheon .cameraGuide__text1, .screen--pocheon .cameraGuide__text2 { color: #294b39; text-shadow: none; }
 .screen--pocheon .homecomingSelect__title, .screen--pocheon .homecomingSelect__hint { text-shadow: none; }
