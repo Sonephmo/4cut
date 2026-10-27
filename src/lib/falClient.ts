@@ -1,13 +1,13 @@
 /**
- * fal.ai nano-banana-2/edit 모델 호출 클라이언트
+ * fal.ai google/nano-banana-2.1/edit 모델 호출 클라이언트
  * VITE_FAL_KEY 환경변수 필요.
  *
  * fal.run 동기 응답과 큐(비동기) 응답을 모두 처리한다.
  * 큐 응답(request_id)인 경우 완료될 때까지 폴링한다.
  */
 
-const FAL_ENDPOINT = "https://fal.run/fal-ai/nano-banana-2/edit";
-const FAL_QUEUE_BASE = "https://queue.fal.run/fal-ai/nano-banana-2";
+const FAL_ENDPOINT = "https://fal.run/google/nano-banana-2.1/edit";
+const FAL_QUEUE_BASE = "https://queue.fal.run/google/nano-banana-2.1";
 const POLL_INTERVAL_MS = 1500;
 
 export interface FalTransformResult {
