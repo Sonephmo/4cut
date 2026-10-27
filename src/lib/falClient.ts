@@ -81,7 +81,6 @@ export async function transformWithFal(params: {
       output_format: "png",
       safety_tolerance: "4",
       limit_generations: true,
-      thinking_level: "high",
     }),
   });
 
