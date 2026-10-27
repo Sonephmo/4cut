@@ -1,13 +1,13 @@
 /**
- * fal.ai openai/gpt-image-2.5/flare/edit 모델 호출 클라이언트
+ * fal.ai google/nano-banana-lite/edit 모델 호출 클라이언트
  * VITE_FAL_KEY 환경변수 필요.
  *
  * fal.run 동기 응답과 큐(비동기) 응답을 모두 처리한다.
  * 큐 응답(request_id)인 경우 완료될 때까지 폴링한다.
  */
 
-const FAL_ENDPOINT = "https://fal.run/openai/gpt-image-2.5/flare/edit";
-const FAL_QUEUE_BASE = "https://queue.fal.run/openai/gpt-image-2.5";
+const FAL_ENDPOINT = "https://fal.run/google/nano-banana-lite/edit";
+const FAL_QUEUE_BASE = "https://queue.fal.run/google/nano-banana-lite";
 const POLL_INTERVAL_MS = 1500;
 
 export interface FalTransformResult {
@@ -77,10 +77,11 @@ export async function transformWithFal(params: {
       image_urls: [params.imageUrl],
       prompt: params.prompt,
       num_images: 1,
-      image_size: "auto",
-      background: "auto",
-      quality: "high",
+      aspect_ratio: "auto",
       output_format: "png",
+      safety_tolerance: "4",
+      limit_generations: true,
+      thinking_level: "high",
     }),
   });
 
